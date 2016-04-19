@@ -1,0 +1,3 @@
+*.pyc
+env/
+google_appengine
