@@ -46,16 +46,18 @@ class TaskListHandler(webapp2.RequestHandler):
 
     def post(self):
         """Create new task"""
-        msg = {'status': 'error'}
+        ret = {'status': 'error'}
 
         task_content = self.request.get('content')
         if task_content:
             key = Task(content=task_content, parent=get_task_list_key()).put()
-            msg['status'] = 'ok'
-            msg['id'] = key.id()
+            ret['status'] = 'ok'
+            ret['id'] = key.id()
+        else:
+            ret['msg'] = 'Task content shouldn\'t be empty'
 
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.write(json.dumps(msg))
+        self.response.write(json.dumps(ret))
 
 
 class TaskHandler(webapp2.RequestHandler):
