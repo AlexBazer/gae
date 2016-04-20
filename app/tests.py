@@ -72,3 +72,5 @@ class AppTest(unittest.TestCase):
         key = Task(parent=get_task_list_key(), content='New 1').put()
         response = self.testapp.delete('/tasks/{id}/'.format(id=key.id()))
         self.assertEqual(response.status_code, 200)
+        # # Test response content type;
+        self.assertEqual(response.content_type, 'application/json')
