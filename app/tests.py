@@ -1,5 +1,5 @@
 from google.appengine.ext import testbed
-from app import TaskListHandler, Task, get_task_list_key
+from app import TaskListHandler, TaskHandler, Task, get_task_list_key
 
 import webtest
 import webapp2
@@ -8,7 +8,10 @@ import json
 
 class AppTest(unittest.TestCase):
     def setUp(self):
-        app = webapp2.WSGIApplication([('/', TaskListHandler)])
+        app = webapp2.WSGIApplication([
+            ('/tasks/', TaskListHandler),
+            ('/tasks/(\d+)', TaskHandler)
+        ])
         self.testapp = webtest.TestApp(app)
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -29,7 +32,12 @@ class AppTest(unittest.TestCase):
             for task in Task.get_tasks(get_task_list_key())
         ])
 
-        response = self.testapp.get('/')
+        response = self.testapp.get('/tasks/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content_type, 'application/json')
         self.assertEqual(response.normal_body, body_content)
+
+    def testCreateTask(self):
+        # Creating task
+        response = self.testapp.post('/tasks/', {'content': 'Task 3'})
+        self.assertEqual(response.status_code, 200)

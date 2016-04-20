@@ -26,7 +26,10 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('Hello, World!')
 
 class TaskListHandler(webapp2.RequestHandler):
-    """Handle tasks list"""
+    """Handle tasks list
+
+    Get all tasks and create new ones
+    """
     def get(self):
         """Get all tasks in json form"""
         tasks = [{'id': task.key.id(), 'content': task.content}
@@ -38,10 +41,8 @@ class TaskListHandler(webapp2.RequestHandler):
 class TaskHandler(webapp2.RequestHandler):
     """Handle one particular task
 
-    It can create and delete tasks
+    It can delete tasks
     """
-    def post(self):
-        pass
 
     def delete(self):
         pass
