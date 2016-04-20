@@ -1,4 +1,34 @@
 var m = require('mithril');
+var utils = require('./utils.js');
+var models = require('./models.js');
+
+/**
+ * EditTask component
+ * @type 	{Object}
+ *
+ * @params 	{object} 	task 		Task object
+ * @event 				onsave     	On task save event. Pass new task further
+ * @event 				oncancel    On task cancel editing event.
+ */
+
+var EditTask = {
+    controller: function(args){
+        var args = args || {};
+        return {
+            task: args.task?utils.cloneModelObject(models.Task):new models.Task()
+        }
+    },
+    view: function(ctrl, args){
+        var args = args || {};
+        return (
+            <div class="edit-task">
+                <Input value={ctrl.task.content()} onchange={ctrl.task.content}/>
+                <Button text="Cancel" onclick={args.cancel?args.cancel:undefined}/>
+                <Button text="Save" onclick={args.save?args.save.bind(this, ctrl.task):undefined}/>
+            </div>
+        )
+    }
+};
 
 /**
  * Button component
@@ -22,7 +52,40 @@ var Button = {
     }
 };
 
+/**
+ * Wrapper for standart input, but limited for one onchange event
+ * and type with value attributes
+ * @type {Object}
+ *
+ * @param   {string}    type        type of input, default is text
+ * @param   {string}    value       value to be shown
+ * @event               onchange    onchange invent, but gets only value of input
+ */
+var Input = {
+    controller: function(args){
+        return {
+            onchange:function(event){
+                if (args.onchange){
+                    args.onchange(event.target.value);
+                }
+            }
+        };
+    },
+    view:  function(ctrl, args){
+        var args = args || {}
+        return (
+            <span class="input">
+                <input
+                    type={args.type?args.type:'text'}
+                    value={args.value||args.default||''}
+                    onchange={ctrl.onchange}
+                />
+            </span>
+        );
+    }
+};
 
 module.exports = {
-    Button: Button
+    Button: Button,
+    EditTask: EditTask
 }

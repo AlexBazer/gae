@@ -1,5 +1,35 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var m = require('mithril');
+var utils = require('./utils.js');
+var models = require('./models.js');
+
+/**
+ * EditTask component
+ * @type 	{Object}
+ *
+ * @params 	{object} 	task 		Task object
+ * @event 				onsave     	On task save event. Pass new task further
+ * @event 				oncancel    On task cancel editing event.
+ */
+
+var EditTask = {
+    controller: function(args){
+        var args = args || {};
+        return {
+            task: args.task?utils.cloneModelObject(models.Task):new models.Task()
+        }
+    },
+    view: function(ctrl, args){
+        var args = args || {};
+        return (
+            {tag: "div", attrs: {class:"edit-task"}, children: [
+                m.component(Input, {value:ctrl.task.content(), onchange:ctrl.task.content}), 
+                m.component(Button, {text:"Cancel", onclick:args.cancel?args.cancel:undefined}), 
+                m.component(Button, {text:"Save", onclick:args.save?args.save.bind(this, ctrl.task):undefined})
+            ]}
+        )
+    }
+};
 
 /**
  * Button component
@@ -23,33 +53,61 @@ var Button = {
     }
 };
 
+/**
+ * Wrapper for standart input, but limited for one onchange event
+ * and type with value attributes
+ * @type {Object}
+ *
+ * @param   {string}    type        type of input, default is text
+ * @param   {string}    value       value to be shown
+ * @event               onchange    onchange invent, but gets only value of input
+ */
+var Input = {
+    controller: function(args){
+        return {
+            onchange:function(event){
+                if (args.onchange){
+                    args.onchange(event.target.value);
+                }
+            }
+        };
+    },
+    view:  function(ctrl, args){
+        var args = args || {}
+        return (
+            {tag: "span", attrs: {class:"input"}, children: [
+                {tag: "input", attrs: {
+                    type:args.type?args.type:'text', 
+                    value:args.value||args.default||'', 
+                    onchange:ctrl.onchange}
+                }
+            ]}
+        );
+    }
+};
 
 module.exports = {
-    Button: Button
+    Button: Button,
+    EditTask: EditTask
 }
 
-},{"mithril":3}],2:[function(require,module,exports){
+},{"./models.js":3,"./utils.js":4,"mithril":5}],2:[function(require,module,exports){
 var m = require('mithril');
 var components = require('./components.js');
+var models = require('./models.js');
 
 var container = document.createElement('div');
 document.body.appendChild(container);
 
-var Task = function(data){
-    var self = this;
-    data = data || {};
-    self.id = m.prop(data.id, '');
-    self.content = m.prop(data.content, '');
-}
-
 var Page = function(){
     var self = this;
     self.controller = function(args){
-        self.tasksList = m.request({method:'GET', url:'/tasks/', type:Task});
+        self.tasksList = m.request({method:'GET', url:'/tasks/', type:models.Task});
     };
     self.view = function(controller, args){
         return (
             {tag: "div", attrs: {class:"container"}, children: [
+                components.EditTask, 
                 m.component(components.Button, {text:"Add task"})
             ]}
         )
@@ -60,7 +118,38 @@ console.log(new Page());
 
 m.mount(container, new Page());
 
-},{"./components.js":1,"mithril":3}],3:[function(require,module,exports){
+},{"./components.js":1,"./models.js":3,"mithril":5}],3:[function(require,module,exports){
+var m = require('mithril')
+/**
+ * Task model
+ */
+var Task = function(data){
+    var self = this;
+    data = data || {};
+    self.id = m.prop(data.id||'');
+    self.content = m.prop(data.content||'');
+}
+
+module.exports = {
+    Task: Task
+}
+
+},{"mithril":5}],4:[function(require,module,exports){
+/**
+ * clone models used in this project
+ * @param  {object} model         Model from which to create new object
+ * @param  {object} objectToClone Object to clone
+ * @return {object}               Cloned object
+ */
+var cloneModelObject = function(model, objectToClone){
+    return new model(JSON.parse(JSON.stringify(objectToClone)));
+};
+
+module.exports = {
+    cloneModelObject: cloneModelObject
+}
+
+},{}],5:[function(require,module,exports){
 ;(function (global, factory) { // eslint-disable-line
 	"use strict"
 	/* eslint-disable no-undef */
