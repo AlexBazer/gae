@@ -28,6 +28,7 @@ def main(sdk_path, test_path):
     # Loading appengine_config from the current project ensures that any
     # changes to configuration there are available to all tests (e.g.
     # sys.path modifications, namespaces, etc.)
+    sys.path.insert(1, test_path)
     try:
         import appengine_config
         (appengine_config)
