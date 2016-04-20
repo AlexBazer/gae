@@ -1,5 +1,6 @@
 from google.appengine.ext import testbed
-from app import TaskListHandler, TaskHandler, Task, get_task_list_key
+from models import Task, get_task_list_key
+from handlers import TaskListHandler, TaskHandler
 
 import webtest
 import webapp2
