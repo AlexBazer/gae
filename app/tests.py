@@ -31,7 +31,7 @@ class AppTest(unittest.TestCase):
         task1.put()
         task2.put()
         body_content = json.dumps([
-            {'id': task.key.id(), 'content': task.content}
+            {'id': task.key.id(), 'content': task.content, 'finished': task.finished}
             for task in Task.get_tasks(get_task_list_key())
         ])
 

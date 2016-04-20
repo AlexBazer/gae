@@ -45,7 +45,7 @@ class TaskListHandler(webapp2.RequestHandler):
     def get(self):
         """Get all tasks in json form"""
         tasks = [
-            {'id': task.key.id(), 'content': task.content}
+            {'id': task.key.id(), 'content': task.content, 'finished': task.finished}
             for task in Task.get_tasks(get_task_list_key())
         ]
         return jsonify(tasks)
