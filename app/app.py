@@ -25,15 +25,24 @@ class MainPage(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Hello, World!')
 
-class TasksHandler(webapp2.RequestHandler):
+class TaskListHandler(webapp2.RequestHandler):
+    """Handle tasks list"""
     def get(self):
+        """Get all tasks in json form"""
         tasks = [{'id': task.key.id(), 'content': task.content}
             for task in Task.get_tasks(get_task_list_key())
         ]
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(json.dumps(tasks))
 
+class TaskHandler(webapp2):
+    """Handle one particular task"""
+    pass
+
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/tasks/', TasksHandler)
+    ('/tasks/', TasksHandler),
+    # ('/tasks/', TasksHandler),
+
 ], debug=True)

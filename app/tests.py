@@ -1,5 +1,5 @@
 from google.appengine.ext import testbed
-from app import TasksHandler, Task, get_task_list_key
+from app import TasksListHandler, Task, get_task_list_key
 
 import webtest
 import webapp2
@@ -8,7 +8,7 @@ import json
 
 class AppTest(unittest.TestCase):
     def setUp(self):
-        app = webapp2.WSGIApplication([('/', TasksHandler)])
+        app = webapp2.WSGIApplication([('/', TasksListHandler)])
         self.testapp = webtest.TestApp(app)
         self.testbed = testbed.Testbed()
         self.testbed.activate()
