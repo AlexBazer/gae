@@ -75,11 +75,11 @@ class TaskHandler(webapp2.RequestHandler):
         task = Task.get_entity(get_task_list_key(), int(_id))
         if not task:
             return jsonify({'status': 'error', 'msg': 'Task doesn\'t exists'})
-
         for field, value in self.request.json.items():
             task_value = getattr(task, field)
-            if value and value != task_value:
+            if value is not None and value != task_value:
                 setattr(task, field, value)
+                task.put()
 
         return jsonify({'status': 'ok'})
 
