@@ -50,8 +50,9 @@ class TaskListHandler(webapp2.RequestHandler):
 
         task_content = self.request.get('content')
         if task_content:
-            Task(content=task_content, parent=get_task_list_key()).put()
+            key = Task(content=task_content, parent=get_task_list_key()).put()
             msg['status'] = 'ok'
+            msg['id'] = key.id()
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(json.dumps(msg))
