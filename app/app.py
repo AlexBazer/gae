@@ -44,6 +44,18 @@ class TaskListHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(json.dumps(tasks))
 
+    def post(self):
+        """Create new task"""
+        msg = {'status': 'error'}
+
+        task_content = self.request.get('content')
+        if task_content:
+            Task(content=task_content, parent=get_task_list_key()).put()
+            msg['status'] = 'ok'
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps(msg))
+
 
 class TaskHandler(webapp2.RequestHandler):
     """Handle one particular task
