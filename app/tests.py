@@ -62,13 +62,13 @@ class AppTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         # # Test response content type
         self.assertEqual(response.content_type, 'application/json')
-        # # Test response content type
+        # # Test response body
         self.assertEqual(response.normal_body, json.dumps(
             {'status': 'error', 'msg': 'Task content shouldn\'t be empty'}
         ))
 
     def testDeleteTask(self):
-        # Delete task
+        # Delete task that exists
         key = Task(parent=get_task_list_key(), content='New 4').put()
         _id = key.id()
         response = self.testapp.delete('/tasks/{id}/'.format(id=_id))
@@ -77,3 +77,5 @@ class AppTest(unittest.TestCase):
         self.assertEqual(response.content_type, 'application/json')
         # # Task with setted id shouldn't exist
         self.assertIsNone(Task.get_entity(get_task_list_key(), _id))
+        # # Test response body
+        self.assertEqual(response.normal_body, json.dumps({'status': 'ok'}))
