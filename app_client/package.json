@@ -1,0 +1,32 @@
+{
+  "name": "gae",
+  "version": "1.0.0",
+  "description": "Tasks client application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexBazer/gae.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexBazer/gae/issues"
+  },
+  "homepage": "https://github.com/AlexBazer/gae#readme",
+  "dependencies": {
+    "mithril": "^0.2.4"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.0.5",
+    "gulp-notify": "^2.2.0",
+    "gulp-rename": "^1.2.2",
+    "mithrilify": "0.0.6",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
+  }
+}

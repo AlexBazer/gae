@@ -1,4 +1,5 @@
 *.pyc
 env/
 */lib/
+*/node_modules/
 google_appengine
