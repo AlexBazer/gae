@@ -26,10 +26,11 @@ var Task = function(data){
 };
 
 /**
- * Save task static method
+ * Create task static method
  * @type {function}
  *
  * @param      {object}    task        Task model object
+ * @param      {function}  callback    Signals when procedure is finished
  */
 
 Task.create = function(task, callback){
@@ -40,6 +41,13 @@ Task.create = function(task, callback){
     });
 };
 
+/**
+ * Edit task static method
+ * @type {function}
+ *
+ * @param      {object}    task        Task model object
+ * @param      {function}  callback    Signals when procedure is finished
+ */
 Task.edit = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
     m.request({method:'POST', url: task_url, data: {
@@ -50,6 +58,13 @@ Task.edit = function(task, callback){
     });
 };
 
+/**
+ * Delete task static method
+ * @type {function}
+ *
+ * @param      {object}    task        Task model object
+ * @param      {function}  callback    Signals when procedure is finished
+ */
 Task.delete = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
     m.request({method:'DELETE', url: task_url}).then(function(){
@@ -62,10 +77,10 @@ Task.delete = function(task, callback){
  * @type {function}
  */
 Task.getList = function(){
-    return m.request({method:'GET', url:'/tasks/', type:Task})
-}
+    return m.request({method:'GET', url:'/tasks/', type:Task});
+};
 
 
 module.exports = {
     Task: Task
-}
+};
