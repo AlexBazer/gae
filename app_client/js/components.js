@@ -23,8 +23,8 @@ var EditTask = {
         return (
             <div class="edit-task">
                 <Input value={ctrl.task.content()} onchange={ctrl.task.content}/>
-                <Button text="Cancel" onclick={args.cancel?args.cancel:undefined}/>
-                <Button text="Save" onclick={args.save?args.save.bind(this, ctrl.task):undefined}/>
+                <Button text="Cancel" onclick={args.oncancel?args.oncancel:undefined}/>
+                <Button text="Save" onclick={args.onsave?args.onsave.bind(this, ctrl.task):undefined}/>
             </div>
         )
     }

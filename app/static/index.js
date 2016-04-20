@@ -24,8 +24,8 @@ var EditTask = {
         return (
             {tag: "div", attrs: {class:"edit-task"}, children: [
                 m.component(Input, {value:ctrl.task.content(), onchange:ctrl.task.content}), 
-                m.component(Button, {text:"Cancel", onclick:args.cancel?args.cancel:undefined}), 
-                m.component(Button, {text:"Save", onclick:args.save?args.save.bind(this, ctrl.task):undefined})
+                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:undefined}), 
+                m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(this, ctrl.task):undefined})
             ]}
         )
     }
@@ -107,7 +107,7 @@ var Page = function(){
     self.view = function(controller, args){
         return (
             {tag: "div", attrs: {class:"container"}, children: [
-                components.EditTask, 
+                m.component(components.EditTask, {onsave:models.Task.save}), 
                 m.component(components.Button, {text:"Add task"})
             ]}
         )
@@ -128,6 +128,13 @@ var Task = function(data){
     data = data || {};
     self.id = m.prop(data.id||'');
     self.content = m.prop(data.content||'');
+}
+
+Task.save = function(task){
+    console.log(task.content());
+    m.request({method:'POST', url: '/tasks/', data: {content:'LOOK!'}}).then(function(data){
+        console.log(data);
+    })
 }
 
 module.exports = {

@@ -13,7 +13,7 @@ var Page = function(){
     self.view = function(controller, args){
         return (
             <div class="container">
-                <components.EditTask/>
+                <components.EditTask onsave={models.Task.save}/>
                 <components.Button text="Add task"/>
             </div>
         )

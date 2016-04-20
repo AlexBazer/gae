@@ -9,6 +9,13 @@ var Task = function(data){
     self.content = m.prop(data.content||'');
 }
 
+Task.save = function(task){
+    console.log(task.content());
+    m.request({method:'POST', url: '/tasks/', data: {content:'LOOK!'}}).then(function(data){
+        console.log(data);
+    })
+}
+
 module.exports = {
     Task: Task
 }
