@@ -6,6 +6,7 @@ import webapp2
 import unittest
 import json
 
+
 class AppTest(unittest.TestCase):
     def setUp(self):
         app = webapp2.WSGIApplication([
@@ -28,7 +29,8 @@ class AppTest(unittest.TestCase):
         task1 = Task(parent=get_task_list_key(), content='New 1')
         task1.put()
         task2.put()
-        body_content = json.dumps([{'id': task.key.id(), 'content': task.content}
+        body_content = json.dumps([
+            {'id': task.key.id(), 'content': task.content}
             for task in Task.get_tasks(get_task_list_key())
         ])
 
@@ -41,3 +43,5 @@ class AppTest(unittest.TestCase):
         # Creating task
         response = self.testapp.post('/tasks/', {'content': 'Task 3'})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        self.assertEqual(response.normal_body, json.dumps({'status': 'ok'}))
