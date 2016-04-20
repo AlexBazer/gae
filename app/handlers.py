@@ -60,8 +60,11 @@ class TaskListHandler(webapp2.RequestHandler):
 class TaskHandler(webapp2.RequestHandler):
     """Handle one particular task
 
-    It can delete tasks
+    It can edit and delete task
     """
+
+    def post(self, _id):
+        return jsonify({})
 
     def delete(self, _id):
         ret = {'status': 'error'}
