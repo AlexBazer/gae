@@ -5,21 +5,27 @@ var models = require('./models.js');
 var container = document.createElement('div');
 document.body.appendChild(container);
 
+
 var Page = function(){
     var self = this;
     self.controller = function(args){
-        self.tasksList = m.request({method:'GET', url:'/tasks/', type:models.Task});
+        self.taskList = models.Task.getList();
     };
-    self.view = function(controller, args){
+    self.view = function(ctrl, args){
         return (
             <div class="container">
-                <components.EditTask onsave={models.Task.save}/>
+                {self.taskList().map(function(elem, index){
+                    return (<components.ViewTask task={elem}/>)
+                })}
+                <components.EditTask onsave={self.saveTask}/>
                 <components.Button text="Add task"/>
             </div>
         )
     };
+    self.saveTask = function(task){
+        models.Task.save(task);
+        self.controller();
+    }
 }
-
-console.log(new Page());
 
 m.mount(container, new Page());

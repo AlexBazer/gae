@@ -2,6 +2,19 @@ var m = require('mithril');
 var utils = require('./utils.js');
 var models = require('./models.js');
 
+
+var ViewTask = {
+    view: function(ctrl, args){
+        var args = args || {};
+        return (
+            <div class="view-task">
+                <span class="task-content">{args.task?args.task.content():''}</span>
+                <Button text="Delete"/>
+            </div>
+        )
+    }
+}
+
 /**
  * EditTask component
  * @type 	{Object}
@@ -87,5 +100,6 @@ var Input = {
 
 module.exports = {
     Button: Button,
-    EditTask: EditTask
+    EditTask: EditTask,
+    ViewTask: ViewTask
 }

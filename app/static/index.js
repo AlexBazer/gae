@@ -3,6 +3,19 @@ var m = require('mithril');
 var utils = require('./utils.js');
 var models = require('./models.js');
 
+
+var ViewTask = {
+    view: function(ctrl, args){
+        var args = args || {};
+        return (
+            {tag: "div", attrs: {class:"view-task"}, children: [
+                {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
+                m.component(Button, {text:"Delete"})
+            ]}
+        )
+    }
+}
+
 /**
  * EditTask component
  * @type 	{Object}
@@ -88,7 +101,8 @@ var Input = {
 
 module.exports = {
     Button: Button,
-    EditTask: EditTask
+    EditTask: EditTask,
+    ViewTask: ViewTask
 }
 
 },{"./models.js":3,"./utils.js":4,"mithril":5}],2:[function(require,module,exports){
@@ -99,22 +113,28 @@ var models = require('./models.js');
 var container = document.createElement('div');
 document.body.appendChild(container);
 
+
 var Page = function(){
     var self = this;
     self.controller = function(args){
-        self.tasksList = m.request({method:'GET', url:'/tasks/', type:models.Task});
+        self.taskList = models.Task.getList();
     };
-    self.view = function(controller, args){
+    self.view = function(ctrl, args){
         return (
             {tag: "div", attrs: {class:"container"}, children: [
-                m.component(components.EditTask, {onsave:models.Task.save}), 
+                self.taskList().map(function(elem, index){
+                    return (m.component(components.ViewTask, {task:elem}))
+                }), 
+                m.component(components.EditTask, {onsave:self.saveTask}), 
                 m.component(components.Button, {text:"Add task"})
             ]}
         )
     };
+    self.saveTask = function(task){
+        models.Task.save(task);
+        self.controller();
+    }
 }
-
-console.log(new Page());
 
 m.mount(container, new Page());
 
@@ -122,13 +142,35 @@ m.mount(container, new Page());
 var m = require('mithril')
 /**
  * Task model
+ *
+ *
  */
+
+ /**
+  * Task model
+  * @type {Class}
+  *
+  * @param      {object}    data        Object with parameters
+  *
+  * @property   {int}       id          Task id
+  * @property   {string}    content     Task content
+  *
+  * @function               save        Save task static method
+  * @function               getList     Get list of tasks static method
+  */
 var Task = function(data){
     var self = this;
     data = data || {};
     self.id = m.prop(data.id||'');
     self.content = m.prop(data.content||'');
 }
+
+/**
+ * Save task static method
+ * @type {function}
+ *
+ * @param      {object}    task        Task model object
+ */
 
 Task.save = function(task){
     m.request({method:'POST', url: '/tasks/', data: {
@@ -137,6 +179,15 @@ Task.save = function(task){
         console.log(data);
     })
 }
+
+/**
+ * Get list of tasks static method
+ * @type {function}
+ */
+Task.getList = function(){
+    return m.request({method:'GET', url:'/tasks/', type:Task})
+}
+
 
 module.exports = {
     Task: Task
