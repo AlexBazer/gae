@@ -8,6 +8,7 @@ var ViewTask = {
         var args = args || {};
         return (
             <div class="view-task">
+                <Input type="checkbox"/>
                 <span class="task-content">{args.task?args.task.content():''}</span>
                 <Button text="Delete" onclick={args.ondelete?args.ondelete:undefined}/>
             </div>
