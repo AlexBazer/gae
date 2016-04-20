@@ -9,7 +9,11 @@ var ViewTask = {
         var args = args || {};
         return (
             {tag: "div", attrs: {class:"view-task"}, children: [
-                m.component(Input, {type:"checkbox", value:args.task.finished()}), 
+                m.component(Input, {
+                    type:"checkbox", 
+                    value:args.task.finished(), 
+                    onchange:args.oncheck?args.oncheck:undefined}
+                ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
                 m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
             ]}
