@@ -97,15 +97,19 @@ class AppTest(unittest.TestCase):
         key = Task(parent=get_task_list_key(), content='New 4').put()
         _id = key.id()
 
-        # Edit finished tag
+        # Edit Task
         response = self.testapp.post_json(
             '/tasks/{id}/'.format(id=_id),
-            {'finished': True}
+            {
+                'finished': True,
+                'content': 'New 5'
+            }
         )
         # # Test page availability
         self.assertEqual(response.status_code, 200)
         # # Test response content type;
         self.assertEqual(response.content_type, 'application/json')
-        # # Test task finished trigger was edited
+        # # Test task finished trigger and content was edited
         task = Task.get_entity(get_task_list_key(), _id)
         self.assertTrue(task.finished)
+        self.assertEqual(task.content, 'New 5')

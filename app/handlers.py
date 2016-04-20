@@ -5,6 +5,20 @@ import json
 import os
 
 
+def jsonify_post_request(fn):
+    def wrap(*args, **kwargs):
+        self = args[0]
+        if self.request.content_type != 'application/json':
+            return self.abort(405)
+        try:
+            self.request.json = json.loads(self.request.body)
+        except ValueError:
+            return self.abort(405)
+
+        return fn(*args, **kwargs)
+    return wrap
+
+
 def jsonify(data):
     """Setup response to pass json to client
 
@@ -36,17 +50,11 @@ class TaskListHandler(webapp2.RequestHandler):
         ]
         return jsonify(tasks)
 
+    @jsonify_post_request
     def post(self):
         """Create new task"""
         ret = {'status': 'error'}
-
-        if self.request.content_type != 'application/json':
-            return self.abort(405)
-        try:
-            task = json.loads(self.request.body)
-        except ValueError:
-            return self.abort(405)
-
+        task = self.request.json
         if task.get('content'):
             key = Task(content=task.get('content'), parent=get_task_list_key()).put()
             ret['status'] = 'ok'
@@ -62,18 +70,24 @@ class TaskHandler(webapp2.RequestHandler):
 
     It can edit and delete task
     """
-
+    @jsonify_post_request
     def post(self, _id):
-        return jsonify({})
+        task = Task.get_entity(get_task_list_key(), int(_id))
+        if not task:
+            return jsonify({'status': 'error', 'msg': 'Task doesn\'t exists'})
+
+        for field, value in self.request.json.items():
+            task_value = getattr(task, field)
+            if value and value != task_value:
+                setattr(task, field, value)
+
+        return jsonify({'status': 'ok'})
 
     def delete(self, _id):
-        ret = {'status': 'error'}
-
         task = Task.get_entity(get_task_list_key(), int(_id))
-        if task:
-            task.key.delete()
-            ret['status'] = 'ok'
-        else:
-            ret['msg'] = 'Task doesn\'t exists'
+        if not task:
+            return jsonify({'status': 'error', 'msg': 'Task doesn\'t exists'})
 
-        return jsonify(ret)
+        task.key.delete()
+
+        return jsonify({'status': 'ok'})
