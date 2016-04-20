@@ -106,4 +106,6 @@ class AppTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         # # Test response content type;
         self.assertEqual(response.content_type, 'application/json')
-        
+        # # Test task finished trigger was edited
+        task = Task.get_entity(get_task_list_key(), _id)
+        self.assertTrue(task.finished)
