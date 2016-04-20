@@ -48,3 +48,6 @@ class AppTest(unittest.TestCase):
         task_created = json.loads(response.normal_body)
 
         self.assertEqual(task_created.get('status'), 'ok')
+
+        # Check if id from response match task
+        self.assertIsNotNone(Task.get_entity(get_task_list_key(), task_created.get('id')))
