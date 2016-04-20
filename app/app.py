@@ -66,11 +66,11 @@ class TaskHandler(webapp2.RequestHandler):
     It can delete tasks
     """
 
-    def delete(self):
+    def delete(self, _id):
         pass
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/tasks/', TaskListHandler),
-    ('/tasks/(\d+)', TaskHandler),
+    ('/tasks/(\d+)/', TaskHandler),
 ], debug=True)

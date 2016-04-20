@@ -11,7 +11,7 @@ class AppTest(unittest.TestCase):
     def setUp(self):
         app = webapp2.WSGIApplication([
             ('/tasks/', TaskListHandler),
-            ('/tasks/(\d+)', TaskHandler)
+            ('/tasks/(\d+)/', TaskHandler)
         ])
         self.testapp = webtest.TestApp(app)
         self.testbed = testbed.Testbed()
@@ -24,7 +24,7 @@ class AppTest(unittest.TestCase):
 
     def testTaskList(self):
         # Get all tasks
-        # Prepare data to test against
+        # # Prepare data to test against
         task2 = Task(parent=get_task_list_key(), content='New 2')
         task1 = Task(parent=get_task_list_key(), content='New 1')
         task1.put()
@@ -35,27 +35,40 @@ class AppTest(unittest.TestCase):
         ])
 
         response = self.testapp.get('/tasks/')
+        # # Test handler availability
         self.assertEqual(response.status_code, 200)
+        # # Test response content type
         self.assertEqual(response.content_type, 'application/json')
+        # # Test response body
         self.assertEqual(response.normal_body, body_content)
 
     def testCreateTask(self):
-        # Creating task
+        # Creating task with content
         response = self.testapp.post('/tasks/', {'content': 'Task 3'})
+        # # Test page availability
         self.assertEqual(response.status_code, 200)
+        # # Test response content type
         self.assertEqual(response.content_type, 'application/json')
-        # Check response body
+
         task_created = json.loads(response.normal_body)
-
+        # # Test response body is ok
         self.assertEqual(task_created.get('status'), 'ok')
-
-        # Check if id from response match task
+        # # and check if id from response match task
         self.assertIsNotNone(Task.get_entity(get_task_list_key(), task_created.get('id')))
 
-        # If content is empty do not create task
+        # Creating task without content
         response = self.testapp.post('/tasks/', {'content': ''})
+        # # Test page availability
         self.assertEqual(response.status_code, 200)
+        # # Test response content type
         self.assertEqual(response.content_type, 'application/json')
+        # # Test response content type
         self.assertEqual(response.normal_body, json.dumps(
             {'status': 'error', 'msg': 'Task content shouldn\'t be empty'}
         ))
+
+    def testDeleteTask(self):
+        # Delete task
+        key = Task(parent=get_task_list_key(), content='New 1').put()
+        response = self.testapp.delete('/tasks/{id}/'.format(id=key.id()))
+        self.assertEqual(response.status_code, 200)
