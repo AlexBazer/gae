@@ -79,7 +79,13 @@ var Input = {
     controller: function(args){
         return {
             onchange:function(event){
-                if (args.onchange){
+                if (!args.onchange){
+                    return;
+                }
+
+                if (args.type == 'checkbox'){
+                    args.onchange(event.target.checked);
+                } else{
                     args.onchange(event.target.value);
                 }
             }
