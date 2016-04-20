@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/AlexBazer/gae#readme",
   "dependencies": {
-    "mithril": "^0.2.4"
+    "mithril": "^0.2.4",
+    "normalize.css": "^4.1.1",
+    "skeleton-less": "^2.0.1"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
