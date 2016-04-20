@@ -10,8 +10,9 @@ var Task = function(data){
 }
 
 Task.save = function(task){
-    console.log(task.content());
-    m.request({method:'POST', url: '/tasks/', data: {content:'LOOK!'}}).then(function(data){
+    m.request({method:'POST', url: '/tasks/', data: {
+        content: task.content()
+    }}).then(function(data){
         console.log(data);
     })
 }
