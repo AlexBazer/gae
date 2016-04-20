@@ -113,3 +113,26 @@ class AppTest(unittest.TestCase):
         task = Task.get_entity(get_task_list_key(), _id)
         self.assertTrue(task.finished)
         self.assertEqual(task.content, 'New 5')
+
+        # Edit Task with empty content
+        response = self.testapp.post_json(
+            '/tasks/{id}/'.format(id=_id),
+            {
+                'finished': True,
+                'content': ''
+            }
+        )
+        # # Content shouldn't chage
+        task = Task.get_entity(get_task_list_key(), _id)
+        self.assertEqual(task.content, 'New 5')
+
+        # Edit Task widhout content in request
+        response = self.testapp.post_json(
+            '/tasks/{id}/'.format(id=_id),
+            {
+                'finished': True,
+            }
+        )
+        # # Content shouldn't chage
+        task = Task.get_entity(get_task_list_key(), _id)
+        self.assertEqual(task.content, 'New 5')
