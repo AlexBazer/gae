@@ -35,14 +35,19 @@ class TaskListHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(json.dumps(tasks))
 
-class TaskHandler(webapp2):
-    """Handle one particular task"""
-    pass
+class TaskHandler(webapp2.RequestHandler):
+    """Handle one particular task
 
+    It can create and delete tasks
+    """
+    def post(self):
+        pass
+
+    def delete(self):
+        pass
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/tasks/', TasksHandler),
-    # ('/tasks/', TasksHandler),
-
+    ('/tasks/', TaskListHandler),
+    ('/tasks/(\d+)', TaskHandler),
 ], debug=True)
