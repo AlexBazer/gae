@@ -1,7 +1,57 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var mithril = require('mithril');
+var m = require('mithril');
 
-},{"mithril":2}],2:[function(require,module,exports){
+/**
+ * Button component
+ * @type 	{Object}
+ *
+ * @params 	{string} 	href 		link to page
+ * @params 	{bool} 		disabled 	mark button disabled
+ * @event 				onclick 	onckick event handler
+ */
+var Button = {
+    view: function(ctrl, args) {
+    	return (
+    		{tag: "a", attrs: {class:['button', args.class?args.class:'button-primary'].join(' '), 
+    		   disabled:args.disabled?true:false, 
+               href:args.href?args.href:'#', 
+	           onclick:args.onclick?args.onclick:function(){}
+    		}, children: [
+    			args.text?args.text:'Empty'
+    		]}
+    	);
+    }
+};
+
+
+module.exports = {
+    Button: Button
+}
+
+},{"mithril":3}],2:[function(require,module,exports){
+var m = require('mithril');
+var components = require('./components.js');
+
+var container = document.createElement('div');
+document.body.appendChild(container);
+
+var Page = function(){
+    var self = this;
+    self.controller = function(args){};
+    self.view = function(controller, args){
+        return (
+            {tag: "div", attrs: {class:"container"}, children: [
+                m.component(components.Button, {text:"Add task"})
+            ]}
+        )
+    };
+}
+
+console.log(new Page());
+
+m.mount(container, new Page());
+
+},{"./components.js":1,"mithril":3}],3:[function(require,module,exports){
 ;(function (global, factory) { // eslint-disable-line
 	"use strict"
 	/* eslint-disable no-undef */
@@ -2193,4 +2243,4 @@ var mithril = require('mithril');
 	return m
 }); // eslint-disable-line
 
-},{}]},{},[1]);
+},{}]},{},[2]);
