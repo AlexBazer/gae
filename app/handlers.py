@@ -40,9 +40,15 @@ class TaskListHandler(webapp2.RequestHandler):
         """Create new task"""
         ret = {'status': 'error'}
 
-        task_content = self.request.get('content')
-        if task_content:
-            key = Task(content=task_content, parent=get_task_list_key()).put()
+        if self.request.content_type != 'application/json':
+            return self.abort(405)
+        try:
+            task = json.loads(self.request.body)
+        except ValueError:
+            return self.abort(405)
+
+        if task.get('content'):
+            key = Task(content=task.get('content'), parent=get_task_list_key()).put()
             ret['status'] = 'ok'
             ret['id'] = key.id()
         else:

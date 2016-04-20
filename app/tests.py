@@ -45,7 +45,7 @@ class AppTest(unittest.TestCase):
 
     def testCreateTask(self):
         # Creating task with content
-        response = self.testapp.post('/tasks/', {'content': 'Task 3'})
+        response = self.testapp.post_json('/tasks/', {'content': 'Task 3'})
         # # Test page availability
         self.assertEqual(response.status_code, 200)
         # # Test response content type
@@ -58,7 +58,7 @@ class AppTest(unittest.TestCase):
         self.assertIsNotNone(Task.get_entity(get_task_list_key(), task_created.get('id')))
 
         # Creating task without content
-        response = self.testapp.post('/tasks/', {'content': ''})
+        response = self.testapp.post_json('/tasks/', {'content': ''})
         # # Test page availability
         self.assertEqual(response.status_code, 200)
         # # Test response content type
