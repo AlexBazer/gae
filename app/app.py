@@ -73,6 +73,8 @@ class TaskHandler(webapp2.RequestHandler):
         if task:
             task.key.delete()
             ret['status'] = 'ok'
+        else:
+            ret['msg'] = 'Task doesn\'t exists'
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(json.dumps(ret))
