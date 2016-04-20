@@ -92,3 +92,18 @@ class AppTest(unittest.TestCase):
         self.assertEqual(response.normal_body, json.dumps(
             {'status': 'error', 'msg': 'Task doesn\'t exists'}
         ))
+
+    def testEditTask(self):
+        key = Task(parent=get_task_list_key(), content='New 4').put()
+        _id = key.id()
+
+        # Edit finished tag
+        response = self.testapp.post_json(
+            '/tasks/{id}/'.format(id=_id),
+            {'finished': True}
+        )
+        # # Test page availability
+        self.assertEqual(response.status_code, 200)
+        # # Test response content type;
+        self.assertEqual(response.content_type, 'application/json')
+        
