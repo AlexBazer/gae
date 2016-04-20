@@ -2,6 +2,7 @@ from models import Task, get_task_list_key
 
 import webapp2
 import json
+import os
 
 
 def jsonify(data):
@@ -16,8 +17,9 @@ def jsonify(data):
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello, World!')
+        index_html = os.path.join(os.path.dirname(__file__), 'index.html')
+        self.response.headers['Content-Type'] = 'text/html'
+        self.response.write(open(index_html).read())
 
 
 class TaskListHandler(webapp2.RequestHandler):
