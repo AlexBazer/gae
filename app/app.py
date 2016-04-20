@@ -1,5 +1,7 @@
-import webapp2
 from google.appengine.ext import ndb
+
+import webapp2
+import json
 
 TASK_LIST = 'task_list'
 
@@ -23,6 +25,15 @@ class MainPage(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Hello, World!')
 
+class TasksHandler(webapp2.RequestHandler):
+    def get(self):
+        tasks = [{'id': task.key.id(), 'content': task.content}
+            for task in Task.get_tasks(get_task_list_key())
+        ]
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps(tasks))
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/tasks/', TasksHandler)
 ], debug=True)
