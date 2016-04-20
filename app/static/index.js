@@ -9,13 +9,13 @@ var ViewTask = {
         var args = args || {};
         return (
             {tag: "div", attrs: {class:"view-task"}, children: [
-                m.component(Input, {type:"checkbox"}), 
+                m.component(Input, {type:"checkbox", value:args.task.finished()}), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
                 m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
             ]}
-        )
+        );
     }
-}
+};
 
 /**
  * EditTask component
@@ -31,7 +31,7 @@ var EditTask = {
         var args = args || {};
         return {
             task: args.task?utils.cloneModelObject(models.Task):new models.Task()
-        }
+        };
     },
     view: function(ctrl, args){
         var args = args || {};
@@ -41,7 +41,7 @@ var EditTask = {
                 m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:undefined}), 
                 m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(this, ctrl.task):undefined})
             ]}
-        )
+        );
     }
 };
 
@@ -87,14 +87,24 @@ var Input = {
         };
     },
     view:  function(ctrl, args){
-        var args = args || {}
+        var args = args || {};
         return (
             {tag: "span", attrs: {class:"input"}, children: [
-                {tag: "input", attrs: {
-                    type:args.type?args.type:'text', 
-                    value:args.value||args.default||'', 
-                    onchange:ctrl.onchange}
-                }
+                function(){
+                    if (args.type == 'checkbox'){
+                        return({tag: "input", attrs: {
+                            type:"checkbox", 
+                            checked:args.value?true:false, 
+                            onchange:ctrl.onchange}
+                        });
+                    } else{
+                        return({tag: "input", attrs: {
+                            type:args.type?args.type:'text', 
+                            value:args.value||args.default||'', 
+                            onchange:ctrl.onchange}
+                        });
+                    }
+                }()
             ]}
         );
     }
@@ -104,7 +114,7 @@ module.exports = {
     Button: Button,
     EditTask: EditTask,
     ViewTask: ViewTask
-}
+};
 
 },{"./models.js":3,"./utils.js":4,"mithril":5}],2:[function(require,module,exports){
 var m = require('mithril');
@@ -166,7 +176,8 @@ var Task = function(data){
     data = data || {};
     self.id = m.prop(data.id||'');
     self.content = m.prop(data.content||'');
-}
+    self.finished = m.prop(data.finished||false);
+};
 
 /**
  * Save task static method

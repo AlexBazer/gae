@@ -22,7 +22,8 @@ var Task = function(data){
     data = data || {};
     self.id = m.prop(data.id||'');
     self.content = m.prop(data.content||'');
-}
+    self.finished = m.prop(data.finished||false);
+};
 
 /**
  * Save task static method

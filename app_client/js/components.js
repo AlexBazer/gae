@@ -8,13 +8,13 @@ var ViewTask = {
         var args = args || {};
         return (
             <div class="view-task">
-                <Input type="checkbox"/>
+                <Input type="checkbox" value={args.task.finished()}/>
                 <span class="task-content">{args.task?args.task.content():''}</span>
                 <Button text="Delete" onclick={args.ondelete?args.ondelete:undefined}/>
             </div>
-        )
+        );
     }
-}
+};
 
 /**
  * EditTask component
@@ -30,7 +30,7 @@ var EditTask = {
         var args = args || {};
         return {
             task: args.task?utils.cloneModelObject(models.Task):new models.Task()
-        }
+        };
     },
     view: function(ctrl, args){
         var args = args || {};
@@ -40,7 +40,7 @@ var EditTask = {
                 <Button text="Cancel" onclick={args.oncancel?args.oncancel:undefined}/>
                 <Button text="Save" onclick={args.onsave?args.onsave.bind(this, ctrl.task):undefined}/>
             </div>
-        )
+        );
     }
 };
 
@@ -86,14 +86,24 @@ var Input = {
         };
     },
     view:  function(ctrl, args){
-        var args = args || {}
+        var args = args || {};
         return (
             <span class="input">
-                <input
-                    type={args.type?args.type:'text'}
-                    value={args.value||args.default||''}
-                    onchange={ctrl.onchange}
-                />
+                {function(){
+                    if (args.type == 'checkbox'){
+                        return(<input
+                            type="checkbox"
+                            checked={args.value?true:false}
+                            onchange={ctrl.onchange}
+                        />);
+                    } else{
+                        return(<input
+                            type={args.type?args.type:'text'}
+                            value={args.value||args.default||''}
+                            onchange={ctrl.onchange}
+                        />);
+                    }
+                }()}
             </span>
         );
     }
@@ -103,4 +113,4 @@ module.exports = {
     Button: Button,
     EditTask: EditTask,
     ViewTask: ViewTask
-}
+};
