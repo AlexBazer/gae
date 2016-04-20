@@ -67,11 +67,15 @@ class TaskHandler(webapp2.RequestHandler):
     """
 
     def delete(self, _id):
+        ret = {'status': 'error'}
+
         task = Task.get_entity(get_task_list_key(), int(_id))
         if task:
             task.key.delete()
+            ret['status'] = 'ok'
 
         self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps(ret))
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
