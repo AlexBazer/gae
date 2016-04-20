@@ -6,26 +6,27 @@ var models = require('./models.js');
 
 var ViewCheckTask = {
     controller: function(args){
-        var args = args || {};
         return {
-            task: utils.cloneModelObject(models.Task, args.task),
             onchecked: function(task, checked){
-                task.finished(checked);
+                console.log('here!');
                 if (!args.onchecked){
                     return;
                 }
+                var taskClone = utils.cloneModelObject(models.Task, task);
+                console.log(taskClone.content(), task.content());
+                task.finished(checked);
                 args.onchecked(task);
             }
         };
     },
     view: function(ctrl, args){
         var args = args || {};
+        console.log(args.task.content())
         return (
             {tag: "div", attrs: {class:"view-task"}, children: [
-                m.component(Input, {
-                    type:"checkbox", 
+                m.component(Checkbox, {
                     value:args.task.finished(), 
-                    onchange:ctrl.onchecked.bind(null, ctrl.task)}
+                    onchange:ctrl.onchecked.bind(null, args.task)}
                 ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
                 m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
@@ -46,6 +47,7 @@ var ViewCheckTask = {
 var EditTask = {
     controller: function(args){
         var args = args || {};
+        console.log('Edit contraller');
         return {
             task: args.task?utils.cloneModelObject(models.Task, args.task):new models.Task()
         };
@@ -55,8 +57,8 @@ var EditTask = {
         return (
             {tag: "div", attrs: {class:"edit-task"}, children: [
                 m.component(Input, {value:ctrl.task.content(), onchange:ctrl.task.content}), 
-                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:undefined}), 
-                m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(this, ctrl.task):undefined})
+                m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(this, ctrl.task):undefined}), 
+                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:undefined})
             ]}
         );
     }
@@ -84,6 +86,32 @@ var Button = {
     }
 };
 
+var Checkbox = {
+    controller: function(args){
+        return {
+            onchange:function(event){
+                if (!args.onchange){
+                    return;
+                }
+                args.onchange(event.target.checked);
+            }
+        };
+    },
+    view:  function(ctrl, args){
+        var args = args || {};
+        console.log(args);
+        return (
+            {tag: "span", attrs: {class:"input"}, children: [
+                {tag: "input", attrs: {
+                    type:"checkbox", 
+                    checked:args.value?true:false, 
+                    onchange:ctrl.onchange}
+                }
+            ]}
+        );
+    }
+};
+
 /**
  * Wrapper for standart input, but limited for one onchange event
  * and type with value attributes
@@ -101,33 +129,20 @@ var Input = {
                     return;
                 }
 
-                if (args.type == 'checkbox'){
-                    args.onchange(event.target.checked);
-                } else{
-                    args.onchange(event.target.value);
-                }
+                args.onchange(event.target.value);
             }
         };
     },
     view:  function(ctrl, args){
         var args = args || {};
+        console.log(args);
         return (
             {tag: "span", attrs: {class:"input"}, children: [
-                function(){
-                    if (args.type == 'checkbox'){
-                        return({tag: "input", attrs: {
-                            type:"checkbox", 
-                            checked:args.value?true:false, 
-                            onchange:ctrl.onchange}
-                        });
-                    } else{
-                        return({tag: "input", attrs: {
-                            type:args.type?args.type:'text', 
-                            value:args.value||args.default||'', 
-                            onchange:ctrl.onchange}
-                        });
-                    }
-                }()
+                {tag: "input", attrs: {
+                    type:args.type?args.type:'text', 
+                    value:args.value||args.default||'', 
+                    onchange:ctrl.onchange}
+                }
             ]}
         );
     }
@@ -150,13 +165,17 @@ document.body.appendChild(container);
 
 var Page = function(){
     var self = this;
+    self.triggerCreateTask = m.prop(false);
+
     self.controller = function(args){
         self.taskList = models.Task.getList();
     };
     self.view = function(ctrl, args){
+        
+        var elems = self.taskList();
         return (
             {tag: "div", attrs: {class:"container"}, children: [
-                self.taskList().map(function(elem, index){
+                elems.map(function(elem, index){
                     return (
                         m.component(components.ViewCheckTask, {
                             task:elem, 
@@ -165,8 +184,17 @@ var Page = function(){
                         )
                     );
                 }), 
-                m.component(components.EditTask, {onsave:self.createTask}), 
-                m.component(components.Button, {text:"Add task"})
+                self.triggerCreateTask()?(
+                    m.component(components.EditTask, {
+                        onsave:self.createTask, 
+                        oncancel:self.triggerCreateTask.bind(null, false)}
+                    )):(
+                        m.component(components.Button, {
+                            text:"Add task", 
+                            onclick:self.triggerCreateTask.bind(null, true)}
+                        )
+                    )
+                
             ]}
         );
     };

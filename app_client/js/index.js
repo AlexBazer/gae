@@ -8,13 +8,17 @@ document.body.appendChild(container);
 
 var Page = function(){
     var self = this;
+    self.triggerCreateTask = m.prop(false);
+
     self.controller = function(args){
         self.taskList = models.Task.getList();
     };
     self.view = function(ctrl, args){
+        
+        var elems = self.taskList();
         return (
             <div class="container">
-                {self.taskList().map(function(elem, index){
+                {elems.map(function(elem, index){
                     return (
                         <components.ViewCheckTask
                             task={elem}
@@ -23,8 +27,17 @@ var Page = function(){
                         />
                     );
                 })}
-                <components.EditTask onsave={self.createTask}/>
-                <components.Button text="Add task"/>
+                {self.triggerCreateTask()?(
+                    <components.EditTask
+                        onsave={self.createTask}
+                        oncancel={self.triggerCreateTask.bind(null, false)}
+                    />):(
+                        <components.Button
+                            text="Add task"
+                            onclick={self.triggerCreateTask.bind(null, true)}
+                        />
+                    )
+                }
             </div>
         );
     };
