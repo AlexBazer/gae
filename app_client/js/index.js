@@ -15,7 +15,7 @@ var Page = function(){
         return (
             <div class="container">
                 {self.taskList().map(function(elem, index){
-                    return (<components.ViewTask task={elem}/>)
+                    return (<components.ViewTask task={elem} ondelete={self.deleteTask.bind(null, elem)}/>)
                 })}
                 <components.EditTask onsave={self.saveTask}/>
                 <components.Button text="Add task"/>
@@ -23,8 +23,10 @@ var Page = function(){
         )
     };
     self.saveTask = function(task){
-        models.Task.save(task);
-        self.controller();
+        models.Task.save(task, self.controller);
+    }
+    self.deleteTask = function(task){
+        models.Task.delete(task, self.controller);
     }
 }
 

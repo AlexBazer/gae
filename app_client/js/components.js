@@ -9,7 +9,7 @@ var ViewTask = {
         return (
             <div class="view-task">
                 <span class="task-content">{args.task?args.task.content():''}</span>
-                <Button text="Delete"/>
+                <Button text="Delete" onclick={args.ondelete?args.ondelete:undefined}/>
             </div>
         )
     }

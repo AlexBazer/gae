@@ -31,12 +31,19 @@ var Task = function(data){
  * @param      {object}    task        Task model object
  */
 
-Task.save = function(task){
+Task.save = function(task, callback){
     m.request({method:'POST', url: '/tasks/', data: {
         content: task.content()
     }}).then(function(data){
-        console.log(data);
+        callback?callback():undefined;
     })
+}
+
+Task.delete = function(task, callback){
+    var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
+    m.request({method:'DELETE', url: task_url}).then(function(){
+        callback?callback():undefined;
+    });
 }
 
 /**

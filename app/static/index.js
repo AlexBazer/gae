@@ -10,7 +10,7 @@ var ViewTask = {
         return (
             {tag: "div", attrs: {class:"view-task"}, children: [
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
-                m.component(Button, {text:"Delete"})
+                m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
             ]}
         )
     }
@@ -123,7 +123,7 @@ var Page = function(){
         return (
             {tag: "div", attrs: {class:"container"}, children: [
                 self.taskList().map(function(elem, index){
-                    return (m.component(components.ViewTask, {task:elem}))
+                    return (m.component(components.ViewTask, {task:elem, ondelete:self.deleteTask.bind(null, elem)}))
                 }), 
                 m.component(components.EditTask, {onsave:self.saveTask}), 
                 m.component(components.Button, {text:"Add task"})
@@ -131,8 +131,10 @@ var Page = function(){
         )
     };
     self.saveTask = function(task){
-        models.Task.save(task);
-        self.controller();
+        models.Task.save(task, self.controller);
+    }
+    self.deleteTask = function(task){
+        models.Task.delete(task, self.controller);
     }
 }
 
@@ -172,12 +174,19 @@ var Task = function(data){
  * @param      {object}    task        Task model object
  */
 
-Task.save = function(task){
+Task.save = function(task, callback){
     m.request({method:'POST', url: '/tasks/', data: {
         content: task.content()
     }}).then(function(data){
-        console.log(data);
+        callback?callback():undefined;
     })
+}
+
+Task.delete = function(task, callback){
+    var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
+    m.request({method:'DELETE', url: task_url}).then(function(){
+        callback?callback():undefined;
+    });
 }
 
 /**
