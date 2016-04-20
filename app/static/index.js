@@ -4,7 +4,20 @@ var utils = require('./utils.js');
 var models = require('./models.js');
 
 
-var ViewTask = {
+var ViewCheckTask = {
+    controller: function(args){
+        var args = args || {};
+        return {
+            task: utils.cloneModelObject(models.Task, args.task),
+            onchecked: function(task, checked){
+                task.finished(checked);
+                if (!args.onchecked){
+                    return;
+                }
+                args.onchecked(task);
+            }
+        };
+    },
     view: function(ctrl, args){
         var args = args || {};
         return (
@@ -12,7 +25,7 @@ var ViewTask = {
                 m.component(Input, {
                     type:"checkbox", 
                     value:args.task.finished(), 
-                    onchange:args.oncheck?args.oncheck:undefined}
+                    onchange:ctrl.onchecked.bind(null, ctrl.task)}
                 ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
                 m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
@@ -34,7 +47,7 @@ var EditTask = {
     controller: function(args){
         var args = args || {};
         return {
-            task: args.task?utils.cloneModelObject(models.Task):new models.Task()
+            task: args.task?utils.cloneModelObject(models.Task, args.task):new models.Task()
         };
     },
     view: function(ctrl, args){
@@ -123,7 +136,7 @@ var Input = {
 module.exports = {
     Button: Button,
     EditTask: EditTask,
-    ViewTask: ViewTask
+    ViewCheckTask: ViewCheckTask
 };
 
 },{"./models.js":3,"./utils.js":4,"mithril":5}],2:[function(require,module,exports){
@@ -144,20 +157,29 @@ var Page = function(){
         return (
             {tag: "div", attrs: {class:"container"}, children: [
                 self.taskList().map(function(elem, index){
-                    return (m.component(components.ViewTask, {task:elem, ondelete:self.deleteTask.bind(null, elem)}))
+                    return (
+                        m.component(components.ViewCheckTask, {
+                            task:elem, 
+                            ondelete:self.deleteTask.bind(null, elem), 
+                            onchecked:self.checkTask}
+                        )
+                    );
                 }), 
-                m.component(components.EditTask, {onsave:self.saveTask}), 
+                m.component(components.EditTask, {onsave:self.createTask}), 
                 m.component(components.Button, {text:"Add task"})
             ]}
-        )
+        );
     };
-    self.saveTask = function(task){
-        models.Task.save(task, self.controller);
-    }
+    self.createTask = function(task){
+        models.Task.create(task, self.controller);
+    };
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
-    }
-}
+    };
+    self.checkTask = function(task){
+        models.Task.edit(task, self.controller);
+    };
+};
 
 m.mount(container, new Page());
 
@@ -178,7 +200,7 @@ var m = require('mithril')
   * @property   {int}       id          Task id
   * @property   {string}    content     Task content
   *
-  * @function               save        Save task static method
+  * @function               create      Create task static method
   * @function               getList     Get list of tasks static method
   */
 var Task = function(data){
@@ -196,20 +218,30 @@ var Task = function(data){
  * @param      {object}    task        Task model object
  */
 
-Task.save = function(task, callback){
+Task.create = function(task, callback){
     m.request({method:'POST', url: '/tasks/', data: {
         content: task.content()
     }}).then(function(data){
         callback?callback():undefined;
-    })
-}
+    });
+};
+
+Task.edit = function(task, callback){
+    var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
+    m.request({method:'POST', url: task_url, data: {
+        content: task.content(),
+        finished: task.finished()
+    }}).then(function(data){
+        callback?callback():undefined;
+    });
+};
 
 Task.delete = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
     m.request({method:'DELETE', url: task_url}).then(function(){
         callback?callback():undefined;
     });
-}
+};
 
 /**
  * Get list of tasks static method

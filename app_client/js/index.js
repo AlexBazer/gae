@@ -15,19 +15,28 @@ var Page = function(){
         return (
             <div class="container">
                 {self.taskList().map(function(elem, index){
-                    return (<components.ViewTask task={elem} ondelete={self.deleteTask.bind(null, elem)}/>)
+                    return (
+                        <components.ViewCheckTask
+                            task={elem}
+                            ondelete={self.deleteTask.bind(null, elem)}
+                            onchecked={self.checkTask}
+                        />
+                    );
                 })}
-                <components.EditTask onsave={self.saveTask}/>
+                <components.EditTask onsave={self.createTask}/>
                 <components.Button text="Add task"/>
             </div>
-        )
+        );
     };
-    self.saveTask = function(task){
-        models.Task.save(task, self.controller);
-    }
+    self.createTask = function(task){
+        models.Task.create(task, self.controller);
+    };
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
-    }
-}
+    };
+    self.checkTask = function(task){
+        models.Task.edit(task, self.controller);
+    };
+};
 
 m.mount(container, new Page());

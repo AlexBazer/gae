@@ -3,7 +3,20 @@ var utils = require('./utils.js');
 var models = require('./models.js');
 
 
-var ViewTask = {
+var ViewCheckTask = {
+    controller: function(args){
+        var args = args || {};
+        return {
+            task: utils.cloneModelObject(models.Task, args.task),
+            onchecked: function(task, checked){
+                task.finished(checked);
+                if (!args.onchecked){
+                    return;
+                }
+                args.onchecked(task);
+            }
+        };
+    },
     view: function(ctrl, args){
         var args = args || {};
         return (
@@ -11,7 +24,7 @@ var ViewTask = {
                 <Input
                     type="checkbox"
                     value={args.task.finished()}
-                    onchange={args.oncheck?args.oncheck:undefined}
+                    onchange={ctrl.onchecked.bind(null, ctrl.task)}
                 />
                 <span class="task-content">{args.task?args.task.content():''}</span>
                 <Button text="Delete" onclick={args.ondelete?args.ondelete:undefined}/>
@@ -33,7 +46,7 @@ var EditTask = {
     controller: function(args){
         var args = args || {};
         return {
-            task: args.task?utils.cloneModelObject(models.Task):new models.Task()
+            task: args.task?utils.cloneModelObject(models.Task, args.task):new models.Task()
         };
     },
     view: function(ctrl, args){
@@ -122,5 +135,5 @@ var Input = {
 module.exports = {
     Button: Button,
     EditTask: EditTask,
-    ViewTask: ViewTask
+    ViewCheckTask: ViewCheckTask
 };
