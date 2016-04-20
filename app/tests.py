@@ -51,3 +51,11 @@ class AppTest(unittest.TestCase):
 
         # Check if id from response match task
         self.assertIsNotNone(Task.get_entity(get_task_list_key(), task_created.get('id')))
+
+        # If content is empty do not create task
+        response = self.testapp.post('/tasks/', {'content': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        self.assertEqual(response.normal_body, json.dumps(
+            {'status': 'error', 'msg': 'Task content shouldn\'t be empty'}
+        ))
