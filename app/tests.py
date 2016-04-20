@@ -44,4 +44,7 @@ class AppTest(unittest.TestCase):
         response = self.testapp.post('/tasks/', {'content': 'Task 3'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content_type, 'application/json')
-        self.assertEqual(response.normal_body, json.dumps({'status': 'ok'}))
+        # Check response body
+        task_created = json.loads(response.normal_body)
+
+        self.assertEqual(task_created.get('status'), 'ok')
