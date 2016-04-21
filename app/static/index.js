@@ -49,27 +49,9 @@ var EditTask = {
             {tag: "div", attrs: {class:"edit-task"}, children: [
                 m.component(Input, {value:args.task.content(), onchange:args.task.content}), 
                 m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(null, args.task):null}), 
-                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:null}), 
-                args.error?m.component(ErrorTooltip, {msg:args.error}):''
+                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:null})
             ]}
         );
-    }
-};
-
-/**
- * Toolpit error message
- * @type {Object}
- *
- * @param 	{string}	msg 	error string message
- */
-var ErrorTooltip = {
-    view: function(ctrl, args){
-        return (
-        	{tag: "div", attrs: {class:"error-msg"}, children: [
-        		{tag: "span", attrs: {}, children: ["!"]}, 
-        		{tag: "i", attrs: {}, children: [args.msg?args.msg:'No message was bound']}
-        	]}
-    	);
     }
 };
 
@@ -161,7 +143,6 @@ document.body.appendChild(container);
 var Page = function(){
     var self = this;
     self.taskToEdit = m.prop(false);
-    self.taskToEditError = m.prop(false);
 
     self.controller = function(args){
         self.taskList = models.Task.getList();
@@ -182,7 +163,6 @@ var Page = function(){
                 self.taskToEdit()?(
                     m.component(components.EditTask, {
                         task:self.taskToEdit(), 
-                        error:self.taskToEditError(), 
                         onsave:self.createTask, 
                         oncancel:self.taskToEdit.bind(null, false)}
                     )):(
@@ -200,9 +180,8 @@ var Page = function(){
         models.Task.create(task, function(ret){
             console.log(ret);
             if (typeof(ret) == 'string'){
-                self.taskToEditError(ret);
+                alert(ret);
             } else {
-                self.taskToEditError(false);
                 self.taskToEdit(false);
                 self.controller();
             }
