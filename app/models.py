@@ -1,10 +1,10 @@
 from google.appengine.ext import ndb
 
-TASK_LIST = 'task_list'
+TASK_KIND = 'TaskManager'
 
 
-def get_task_list_key():
-    return ndb.Key('TaskManager', TASK_LIST)
+def get_task_list_key(user_id):
+    return ndb.Key('TaskManager', user_id)
 
 
 class Task(ndb.Model):
@@ -14,9 +14,13 @@ class Task(ndb.Model):
     dtime = ndb.DateTimeProperty(auto_now_add=True)
 
     @classmethod
-    def get_tasks(cls, task_list):
-        return cls.query(ancestor=task_list).order(cls.dtime).fetch()
+    def get_tasks(cls, user_id):
+        return cls.query(ancestor=get_task_list_key(user_id)).order(cls.dtime).fetch()
 
     @classmethod
-    def get_entity(cls, task_list, _id):
-        return ndb.Key(cls._class_name(), _id, parent=task_list).get()
+    def create_entity(cls, user_id, **kwargs):
+        return Task(parent=get_task_list_key(user_id), **kwargs)
+
+    @classmethod
+    def get_entity(cls, user_id, _id):
+        return ndb.Key(cls._class_name(), _id, parent=get_task_list_key(user_id)).get()

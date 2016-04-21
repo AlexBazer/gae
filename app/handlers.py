@@ -1,4 +1,5 @@
 from models import Task, get_task_list_key
+from google.appengine.api import users
 
 import webapp2
 import json
@@ -29,24 +30,29 @@ def jsonify(data):
     return response
 
 
-class MainPage(webapp2.RequestHandler):
+class RequestHandlerWithUser(webapp2.RequestHandler):
+    def __init__(self, *args, **kwargs):
+        super(RequestHandlerWithUser, self).__init__(*args, **kwargs)
+        self.user = users.get_current_user()
+
+
+class MainPage(RequestHandlerWithUser):
     def get(self):
         index_html = os.path.join(os.path.dirname(__file__), 'index.html')
         self.response.headers['Content-Type'] = 'text/html'
         self.response.write(open(index_html).read())
 
 
-class TaskListHandler(webapp2.RequestHandler):
+class TaskListHandler(RequestHandlerWithUser):
     """Handle tasks list
 
     Get all tasks and create new ones
     """
-
     def get(self):
         """Get all tasks in json form"""
         tasks = [
             {'id': task.key.id(), 'content': task.content, 'finished': task.finished}
-            for task in Task.get_tasks(get_task_list_key())
+            for task in Task.get_tasks(self.user.user_id())
         ]
         return jsonify(tasks)
 
@@ -56,7 +62,7 @@ class TaskListHandler(webapp2.RequestHandler):
         ret = {'status': 'error'}
         task = self.request.json
         if task.get('content'):
-            key = Task(content=task.get('content'), parent=get_task_list_key()).put()
+            key = Task.create_entity(self.user.user_id(), content=task.get('content')).put()
             ret['status'] = 'ok'
             ret['id'] = key.id()
         else:
@@ -65,14 +71,14 @@ class TaskListHandler(webapp2.RequestHandler):
         return jsonify(ret)
 
 
-class TaskHandler(webapp2.RequestHandler):
+class TaskHandler(RequestHandlerWithUser):
     """Handle one particular task
 
     It can edit and delete task
     """
     @jsonify_post_request
     def post(self, _id):
-        task = Task.get_entity(get_task_list_key(), int(_id))
+        task = Task.get_entity(self.user.user_id(), int(_id))
         if not task:
             return jsonify({'status': 'error', 'msg': 'Task doesn\'t exists'})
         for field, value in self.request.json.items():
@@ -84,7 +90,7 @@ class TaskHandler(webapp2.RequestHandler):
         return jsonify({'status': 'ok'})
 
     def delete(self, _id):
-        task = Task.get_entity(get_task_list_key(), int(_id))
+        task = Task.get_entity(self.user.user_id(), int(_id))
         if not task:
             return jsonify({'status': 'error', 'msg': 'Task doesn\'t exists'})
 
