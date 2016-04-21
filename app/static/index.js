@@ -150,10 +150,9 @@ var Page = function(){
     };
 
     self.view = function(ctrl, args){
-        var elems = self.taskList();
         return (
             {tag: "div", attrs: {class:"container"}, children: [
-                elems.map(function(elem, index){
+                self.taskList().map(function(elem, index){
                     return (
                         m.component(components.ViewCheckTask, {
                             task:elem, 
@@ -186,7 +185,7 @@ var Page = function(){
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
     };
-    
+
     self.checkTask = function(task){
         models.Task.edit(task, self.controller);
     };
