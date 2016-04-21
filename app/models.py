@@ -15,7 +15,7 @@ class Task(ndb.Model):
 
     @classmethod
     def get_tasks(cls, task_list):
-        return cls.query(ancestor=task_list).order(-cls.dtime).fetch()
+        return cls.query(ancestor=task_list).order(cls.dtime).fetch()
 
     @classmethod
     def get_entity(cls, task_list, _id):

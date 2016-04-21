@@ -14,4 +14,9 @@ indexes:
   ancestor: yes
   properties:
   - name: dtime
+
+- kind: Task
+  ancestor: yes
+  properties:
+  - name: dtime
     direction: desc
