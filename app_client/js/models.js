@@ -41,7 +41,7 @@ Task.create = function(task, callback){
             task.id(data.id);
             callback?callback(task):null;
         } else {
-            callback?callback(data.msg):null;
+            alert(data.msg);
         }
     });
 };
@@ -59,7 +59,11 @@ Task.edit = function(task, callback){
         content: task.content(),
         finished: task.finished()
     }}).then(function(data){
-        callback?callback():null;
+        if (data.status == 'ok'){
+            callback?callback(task):null;
+        } else {
+            alert(data.msg);
+        }
     });
 };
 
@@ -76,7 +80,7 @@ Task.delete = function(task, callback){
         if (data.status == 'ok'){
             callback?callback(task):null;
         } else {
-            callback?callback(msg):null;                        
+            alert(data.msg);
         }
     });
 };

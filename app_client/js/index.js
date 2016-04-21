@@ -46,30 +46,20 @@ var Page = function(){
 
     self.createTask = function(task){
         models.Task.create(task, function(ret){
-            console.log(ret);
-            if (typeof(ret) == 'string'){
-                alert(ret);
-            } else {
-                self.taskToEdit(false);
-                self.taskList().push(ret);
-            }
+            self.taskToEdit(false);
+            self.taskList().push(ret);
         });
     };
 
     self.deleteTask = function(task){
         models.Task.delete(task, function(ret){
-            if (typeof(ret) == 'string'){
-                alert(ret);
-            } else {
-                var indexToDelete = utils.indexOfID(self.taskList(), ret)
-                console.log(indexToDelete);
-                self.taskList().splice(indexToDelete, 1);
-            }
+            var indexToDelete = utils.indexOfID(self.taskList(), ret)
+            self.taskList().splice(indexToDelete, 1);
         });
     };
 
     self.checkTask = function(task){
-        models.Task.edit(task, self.controller);
+        models.Task.edit(task);
     };
 };
 
