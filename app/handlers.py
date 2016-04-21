@@ -41,7 +41,10 @@ class RequestHandlerWithUser(webapp2.RequestHandler):
 class MainPage(RequestHandlerWithUser):
     def get(self):
         index_html = os.path.join(os.path.dirname(__file__), 'index.html')
-        self.response.write(template.render(index_html, {'logout_url': users.create_logout_url('/')}))
+        self.response.write(template.render(index_html, {
+            'logout_url': users.create_logout_url('/'),
+            'user': self.user
+        }))
 
 
 class TaskListHandler(RequestHandlerWithUser):

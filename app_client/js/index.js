@@ -25,27 +25,31 @@ var ViewTasks = function(){
     self.view = function(ctrl, args){
         return (
             <div>
-                {self.taskList().map(function(elem, index){
-                    return (
-                        <components.ViewCheckTask
-                            task={elem}
-                            ondelete={self.deleteTask}
-                            onchecked={self.checkTask}
-                        />
-                    );
-                })}
-                {self.taskToEdit()?(
-                    <components.EditTask
-                        task={self.taskToEdit()}
-                        onsave={self.createTask}
-                        oncancel={self.taskToEdit.bind(null, false)}
-                    />):(
-                        <components.Button
-                            text="Add task"
-                            onclick={self.taskToEdit.bind(null, new models.Task())}
-                        />
-                    )
-                }
+                <div class="ViewTasks">
+                    {self.taskList().map(function(elem, index){
+                        return (
+                            <components.ViewCheckTask
+                                task={elem}
+                                ondelete={self.deleteTask}
+                                onchecked={self.checkTask}
+                            />
+                        );
+                    })}
+                </div>
+                <div class="controls">
+                    {self.taskToEdit()?(
+                        <components.EditTask
+                            task={self.taskToEdit()}
+                            onsave={self.createTask}
+                            oncancel={self.taskToEdit.bind(null, false)}
+                        />):(
+                            <components.Button
+                                text="Add task"
+                                onclick={self.taskToEdit.bind(null, new models.Task())}
+                            />
+                        )
+                    }
+                </div>
             </div>
         );
     };

@@ -23,13 +23,19 @@ var ViewCheckTask = {
     view: function(ctrl, args){
         var args = args || {};
         return (
-            {tag: "div", attrs: {class:['view-task', args.task.finished()?'checked':''].join(' '), key:args.task.id()}, children: [
+            {tag: "div", attrs: {class:['ViewCheckTask row', args.task.finished()?'checked':''].join(' '), key:args.task.id()}, children: [
                 m.component(Checkbox, {
                     value:args.task.finished(), 
-                    onchange:ctrl.onchecked.bind(null, args.task, args.onchecked)}
+                    onchange:ctrl.onchecked.bind(null, args.task, args.onchecked), 
+                    class:"one column"}
                 ), 
-                {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
-                m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete.bind(null, args.task):null})
+                m.component(Input, {
+                    value:args.task.content(), 
+                    class:"eight columns"}
+                ), 
+                {tag: "div", attrs: {class:"two columns"}, children: [
+                    m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete.bind(null, args.task):null})
+                ]}
             ]}
         );
     }
@@ -90,7 +96,7 @@ var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
         return (
-            {tag: "span", attrs: {class:"input"}, children: [
+            {tag: "div", attrs: {class:['checkbox', args.class?args.class:''].join(' ')}, children: [
                 {tag: "input", attrs: {
                     type:"checkbox", 
                     checked:args.value?true:false, 
@@ -114,7 +120,7 @@ var Input = {
     view:  function(ctrl, args){
         var args = args || {};
         return (
-            {tag: "span", attrs: {class:"input"}, children: [
+            {tag: "div", attrs: {class:['input', args.class?args.class:''].join(' ')}, children: [
                 {tag: "input", attrs: {
                     type:args.type?args.type:'text', 
                     value:args.value||args.default||'', 
@@ -159,27 +165,31 @@ var ViewTasks = function(){
     self.view = function(ctrl, args){
         return (
             {tag: "div", attrs: {}, children: [
-                self.taskList().map(function(elem, index){
-                    return (
-                        m.component(components.ViewCheckTask, {
-                            task:elem, 
-                            ondelete:self.deleteTask, 
-                            onchecked:self.checkTask}
+                {tag: "div", attrs: {class:"ViewTasks"}, children: [
+                    self.taskList().map(function(elem, index){
+                        return (
+                            m.component(components.ViewCheckTask, {
+                                task:elem, 
+                                ondelete:self.deleteTask, 
+                                onchecked:self.checkTask}
+                            )
+                        );
+                    })
+                ]}, 
+                {tag: "div", attrs: {class:"controls"}, children: [
+                    self.taskToEdit()?(
+                        m.component(components.EditTask, {
+                            task:self.taskToEdit(), 
+                            onsave:self.createTask, 
+                            oncancel:self.taskToEdit.bind(null, false)}
+                        )):(
+                            m.component(components.Button, {
+                                text:"Add task", 
+                                onclick:self.taskToEdit.bind(null, new models.Task())}
+                            )
                         )
-                    );
-                }), 
-                self.taskToEdit()?(
-                    m.component(components.EditTask, {
-                        task:self.taskToEdit(), 
-                        onsave:self.createTask, 
-                        oncancel:self.taskToEdit.bind(null, false)}
-                    )):(
-                        m.component(components.Button, {
-                            text:"Add task", 
-                            onclick:self.taskToEdit.bind(null, new models.Task())}
-                        )
-                    )
-                
+                    
+                ]}
             ]}
         );
     };

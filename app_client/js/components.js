@@ -22,13 +22,19 @@ var ViewCheckTask = {
     view: function(ctrl, args){
         var args = args || {};
         return (
-            <div class={['view-task', args.task.finished()?'checked':''].join(' ')} key={args.task.id()}>
+            <div class={['ViewCheckTask row', args.task.finished()?'checked':''].join(' ')} key={args.task.id()}>
                 <Checkbox
                     value={args.task.finished()}
                     onchange={ctrl.onchecked.bind(null, args.task, args.onchecked)}
+                    class="one column"
                 />
-                <span class="task-content">{args.task?args.task.content():''}</span>
-                <Button text="Delete" onclick={args.ondelete?args.ondelete.bind(null, args.task):null}/>
+                <Input
+                    value={args.task.content()}
+                    class="eight columns"
+                />
+                <div class="two columns">
+                    <Button text="Delete" onclick={args.ondelete?args.ondelete.bind(null, args.task):null}/>
+                </div>
             </div>
         );
     }
@@ -89,13 +95,13 @@ var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
         return (
-            <span class="input">
+            <div class={['checkbox', args.class?args.class:''].join(' ')}>
                 <input
                     type="checkbox"
                     checked={args.value?true:false}
                     onchange={args.onchange?m.withAttr('checked', args.onchange):null}
                 />
-            </span>
+            </div>
         );
     }
 };
@@ -113,13 +119,13 @@ var Input = {
     view:  function(ctrl, args){
         var args = args || {};
         return (
-            <span class="input">
+            <div class={['input', args.class?args.class:''].join(' ')}>
                 <input
                     type={args.type?args.type:'text'}
                     value={args.value||args.default||''}
                     onchange={args.onchange?m.withAttr('value', args.onchange):null}
                 />
-            </span>
+            </div>
         );
     }
 };

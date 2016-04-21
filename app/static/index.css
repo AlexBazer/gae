@@ -993,3 +993,6 @@ there.
 /* Larger than tablet */
 /* Larger than desktop */
 /* Larger than Desktop HD */
+.user-card {
+  text-align: right;
+}

@@ -3,13 +3,22 @@
     <head>
         <meta charset="utf-8">
         <title>EMPTY!</title>
-        <link rel="stylesheet" href="/static/index.css" charset="utf-8">
     </head>
     <body>
-        <div class="container">
-            <div><a class="button button-primary" href="{{logout_url}}">Logout</a></div>
-            <div id="app"></div>
-        </div>
+        <header>
+            <div class="container">
+                <div class="user-card">
+                    <span>Hello!</span>
+                    <span>{{user.nickname}}</span>
+                    <a class="button button-primary" href="{{logout_url}}">Logout</a>
+                </div>
+            </div>
+        </header>
+        <section>
+            <div class="container">
+                <div id="app"></div>
+            </div>
+        </section>
         <script src="/static/index.js" charset="utf-8"></script>
     </body>
 </html>
