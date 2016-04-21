@@ -11,6 +11,8 @@ var appContainer = document.getElementById('app');
  * Displays list of tasks for current user.
  * Handle adding new Task, removind Task, and checking task as finished
  *
+ * Materialize.css was user as layout for components
+ *
  * @type 	{Class}
  */
 var ViewTasks = function(){

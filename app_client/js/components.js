@@ -73,6 +73,8 @@ var EditTask = {
  *
  * @params 	{string} 	href 		link to page
  * @params 	{bool} 		disabled 	mark button disabled
+ * @params 	{string}    text     	button text
+ * @params 	{string}    icon     	button icon
  * @event 				onclick 	onckick event handler
  */
 var Button = {
@@ -93,6 +95,7 @@ var Button = {
 /**
  * Wrapper for standart input checkbox, but limited for one onchange event
  * and type with value attributes
+ * !!! ids used for materialize.css
  * @type {Object}
  *
  * @param   {string}    type        type of input, default is text
@@ -102,7 +105,7 @@ var Button = {
 var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
-        var _id = Math.floor(Math.random()*1000);
+        var _id = 'checkbox_' + Math.floor(Math.random()*1000);
         return (
             <span class={['checkbox', args.class?args.class:''].join(' ')}>
                 <input
