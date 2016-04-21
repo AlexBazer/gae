@@ -174,7 +174,7 @@ var appContainer = document.getElementById('app');
 /**
  * ViewTasks component
  * Displays list of tasks for current user.
- * Handle adding new Task, removind Task, and checking task as finished
+ * Handle adding new Task, removind Task, and checking Task as finished
  *
  * Materialize.css was user as layout for components
  *
@@ -271,7 +271,7 @@ var Task = function(data){
  * @type {function}
  *
  * @param      {object}    task        Task model object
- * @param      {function}  callback    Signals when procedure is finished
+ * @param      {function}  callback    Signals when procedure is finished, pass task
  */
 
 Task.create = function(task, callback){
@@ -292,7 +292,7 @@ Task.create = function(task, callback){
  * @type {function}
  *
  * @param      {object}    task        Task model object
- * @param      {function}  callback    Signals when procedure is finished
+ * @param      {function}  callback    Signals when procedure is finished, pass task
  */
 Task.edit = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
@@ -313,7 +313,7 @@ Task.edit = function(task, callback){
  * @type {function}
  *
  * @param      {object}    task        Task model object
- * @param      {function}  callback    Signals when procedure is finished
+ * @param      {function}  callback    Signals when procedure is finished, pass task
  */
 Task.delete = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());

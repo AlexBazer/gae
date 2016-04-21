@@ -25,7 +25,7 @@ var Task = function(data){
  * @type {function}
  *
  * @param      {object}    task        Task model object
- * @param      {function}  callback    Signals when procedure is finished
+ * @param      {function}  callback    Signals when procedure is finished, pass task
  */
 
 Task.create = function(task, callback){
@@ -46,7 +46,7 @@ Task.create = function(task, callback){
  * @type {function}
  *
  * @param      {object}    task        Task model object
- * @param      {function}  callback    Signals when procedure is finished
+ * @param      {function}  callback    Signals when procedure is finished, pass task
  */
 Task.edit = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
@@ -67,7 +67,7 @@ Task.edit = function(task, callback){
  * @type {function}
  *
  * @param      {object}    task        Task model object
- * @param      {function}  callback    Signals when procedure is finished
+ * @param      {function}  callback    Signals when procedure is finished, pass task
  */
 Task.delete = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
