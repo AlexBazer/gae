@@ -22,7 +22,7 @@ var ViewCheckTask = {
             <div class="view-task">
                 <Checkbox
                     value={args.task.finished()}
-                    onchange={args.onchecked}
+                    onchange={ctrl.onchecked.bind(null, args.task)}
                     newval={args.task.id()}
                 />
                 <span class="task-content">{args.task?args.task.content():''}</span>

@@ -23,7 +23,7 @@ var ViewCheckTask = {
             {tag: "div", attrs: {class:"view-task"}, children: [
                 m.component(Checkbox, {
                     value:args.task.finished(), 
-                    onchange:args.onchecked, 
+                    onchange:ctrl.onchecked.bind(null, args.task), 
                     newval:args.task.id()}
                 ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
@@ -188,8 +188,7 @@ var Page = function(){
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
     };
-    self.checkTask = function(task,checked){
-        task.finished(checked)
+    self.checkTask = function(task){
         console.log('here!', task.id());
 
         models.Task.edit(task, self.controller);

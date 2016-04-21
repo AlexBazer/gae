@@ -47,8 +47,7 @@ var Page = function(){
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
     };
-    self.checkTask = function(task,checked){
-        task.finished(checked)
+    self.checkTask = function(task){
         console.log('here!', task.id());
 
         models.Task.edit(task, self.controller);
