@@ -68,7 +68,7 @@ var Button = {
     		<a class={['button', args.class?args.class:'button-primary'].join(' ')}
     		   disabled={args.disabled?true:false}
                href={args.href?args.href:'#'}
-	           onclick={args.onclick?args.onclick:function(){}}
+	           onclick={args.onclick?args.onclick:null}
     		>
     			{args.text?args.text:'Empty'}
     		</a>

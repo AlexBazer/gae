@@ -14,6 +14,7 @@ var Page = function(){
     self.controller = function(args){
         self.taskList = models.Task.getList();
     };
+
     self.view = function(ctrl, args){
         var elems = self.taskList();
         return (
@@ -42,13 +43,16 @@ var Page = function(){
             </div>
         );
     };
+
     self.createTask = function(task){
         models.Task.create(task, self.controller);
         self.taskToEdit(false);
     };
+
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
     };
+    
     self.checkTask = function(task){
         models.Task.edit(task, self.controller);
     };
