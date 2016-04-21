@@ -8,12 +8,10 @@ var ViewCheckTask = {
     controller: function(args){
         return {
             onchecked: function(task, checked){
-                console.log('here!');
                 if (!args.onchecked){
                     return;
                 }
                 var taskClone = utils.cloneModelObject(models.Task, task);
-                console.log(taskClone.content(), task.content());
                 task.finished(checked);
                 args.onchecked(task);
             }
@@ -21,12 +19,12 @@ var ViewCheckTask = {
     },
     view: function(ctrl, args){
         var args = args || {};
-        console.log(args.task.content())
         return (
             {tag: "div", attrs: {class:"view-task"}, children: [
                 m.component(Checkbox, {
                     value:args.task.finished(), 
-                    onchange:ctrl.onchecked.bind(null, args.task)}
+                    onchange:args.onchecked, 
+                    newval:args.task.id()}
                 ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
                 m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
@@ -86,26 +84,24 @@ var Button = {
     }
 };
 
+/**
+ * Wrapper for standart input checkbox, but limited for one onchange event
+ * and type with value attributes
+ * @type {Object}
+ *
+ * @param   {string}    type        type of input, default is text
+ * @param   {string}    value       value true|false of checkbox
+ * @event               onchange    onchange invent, pass checked state
+ */
 var Checkbox = {
-    controller: function(args){
-        return {
-            onchange:function(event){
-                if (!args.onchange){
-                    return;
-                }
-                args.onchange(event.target.checked);
-            }
-        };
-    },
     view:  function(ctrl, args){
         var args = args || {};
-        console.log(args);
         return (
             {tag: "span", attrs: {class:"input"}, children: [
                 {tag: "input", attrs: {
                     type:"checkbox", 
                     checked:args.value?true:false, 
-                    onchange:ctrl.onchange}
+                    onchange:args.onchange?m.withAttr('checked', args.onchange):null}
                 }
             ]}
         );
@@ -122,26 +118,14 @@ var Checkbox = {
  * @event               onchange    onchange invent, but gets only value of input
  */
 var Input = {
-    controller: function(args){
-        return {
-            onchange:function(event){
-                if (!args.onchange){
-                    return;
-                }
-
-                args.onchange(event.target.value);
-            }
-        };
-    },
     view:  function(ctrl, args){
         var args = args || {};
-        console.log(args);
         return (
             {tag: "span", attrs: {class:"input"}, children: [
                 {tag: "input", attrs: {
                     type:args.type?args.type:'text', 
                     value:args.value||args.default||'', 
-                    onchange:ctrl.onchange}
+                    onchange:args.onchange?m.withAttr('value', args.onchange):null}
                 }
             ]}
         );
@@ -171,7 +155,7 @@ var Page = function(){
         self.taskList = models.Task.getList();
     };
     self.view = function(ctrl, args){
-        
+
         var elems = self.taskList();
         return (
             {tag: "div", attrs: {class:"container"}, children: [
@@ -180,7 +164,7 @@ var Page = function(){
                         m.component(components.ViewCheckTask, {
                             task:elem, 
                             ondelete:self.deleteTask.bind(null, elem), 
-                            onchecked:self.checkTask}
+                            onchecked:self.checkTask.bind(null, elem)}
                         )
                     );
                 }), 
@@ -204,7 +188,10 @@ var Page = function(){
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
     };
-    self.checkTask = function(task){
+    self.checkTask = function(task,checked){
+        task.finished(checked)
+        console.log('here!', task.id());
+
         models.Task.edit(task, self.controller);
     };
 };

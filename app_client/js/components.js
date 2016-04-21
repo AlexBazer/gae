@@ -7,12 +7,10 @@ var ViewCheckTask = {
     controller: function(args){
         return {
             onchecked: function(task, checked){
-                console.log('here!');
                 if (!args.onchecked){
                     return;
                 }
                 var taskClone = utils.cloneModelObject(models.Task, task);
-                console.log(taskClone.content(), task.content());
                 task.finished(checked);
                 args.onchecked(task);
             }
@@ -20,12 +18,12 @@ var ViewCheckTask = {
     },
     view: function(ctrl, args){
         var args = args || {};
-        console.log(args.task.content())
         return (
             <div class="view-task">
                 <Checkbox
                     value={args.task.finished()}
-                    onchange={ctrl.onchecked.bind(null, args.task)}
+                    onchange={args.onchecked}
+                    newval={args.task.id()}
                 />
                 <span class="task-content">{args.task?args.task.content():''}</span>
                 <Button text="Delete" onclick={args.ondelete?args.ondelete:undefined}/>
@@ -85,26 +83,24 @@ var Button = {
     }
 };
 
+/**
+ * Wrapper for standart input checkbox, but limited for one onchange event
+ * and type with value attributes
+ * @type {Object}
+ *
+ * @param   {string}    type        type of input, default is text
+ * @param   {string}    value       value true|false of checkbox
+ * @event               onchange    onchange invent, pass checked state
+ */
 var Checkbox = {
-    controller: function(args){
-        return {
-            onchange:function(event){
-                if (!args.onchange){
-                    return;
-                }
-                args.onchange(event.target.checked);
-            }
-        };
-    },
     view:  function(ctrl, args){
         var args = args || {};
-        console.log(args);
         return (
             <span class="input">
                 <input
                     type="checkbox"
                     checked={args.value?true:false}
-                    onchange={ctrl.onchange}
+                    onchange={args.onchange?m.withAttr('checked', args.onchange):null}
                 />
             </span>
         );
@@ -121,26 +117,14 @@ var Checkbox = {
  * @event               onchange    onchange invent, but gets only value of input
  */
 var Input = {
-    controller: function(args){
-        return {
-            onchange:function(event){
-                if (!args.onchange){
-                    return;
-                }
-
-                args.onchange(event.target.value);
-            }
-        };
-    },
     view:  function(ctrl, args){
         var args = args || {};
-        console.log(args);
         return (
             <span class="input">
                 <input
                     type={args.type?args.type:'text'}
                     value={args.value||args.default||''}
-                    onchange={ctrl.onchange}
+                    onchange={args.onchange?m.withAttr('value', args.onchange):null}
                 />
             </span>
         );

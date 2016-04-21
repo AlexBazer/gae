@@ -14,7 +14,7 @@ var Page = function(){
         self.taskList = models.Task.getList();
     };
     self.view = function(ctrl, args){
-        
+
         var elems = self.taskList();
         return (
             <div class="container">
@@ -23,7 +23,7 @@ var Page = function(){
                         <components.ViewCheckTask
                             task={elem}
                             ondelete={self.deleteTask.bind(null, elem)}
-                            onchecked={self.checkTask}
+                            onchecked={self.checkTask.bind(null, elem)}
                         />
                     );
                 })}
@@ -47,7 +47,10 @@ var Page = function(){
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
     };
-    self.checkTask = function(task){
+    self.checkTask = function(task,checked){
+        task.finished(checked)
+        console.log('here!', task.id());
+
         models.Task.edit(task, self.controller);
     };
 };
