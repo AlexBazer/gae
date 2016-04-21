@@ -1,5 +1,5 @@
 from google.appengine.ext import testbed
-from models import Task, get_task_list_key
+from models import Task
 from handlers import TaskListHandler, TaskHandler
 
 import webtest
@@ -45,7 +45,7 @@ class AppTest(unittest.TestCase):
         task2.put()
         body_content = json.dumps([
             {'id': task.key.id(), 'content': task.content, 'finished': task.finished}
-            for task in Task.get_tasks(self.user_id)
+            for task in Task.get_list(self.user_id)
         ])
 
         response = self.testapp.get('/tasks/')

@@ -1,15 +1,4 @@
 /**
- * Clone models used in this project
- * @param  {object} model         Model from which to create new object
- * @param  {object} objectToClone Object to clone
- * @return {object}               Cloned object
- */
-var cloneModelObject = function(model, objectToClone){
-    return new model(JSON.parse(JSON.stringify(objectToClone)));
-};
-
-
-/**
  * indexOfID Find element in array by id and return Index. Add fields are m.prop
  * @param  {array}  array       Array of elements
  * @param  {object} find        Object to be found
@@ -22,6 +11,5 @@ var indexOfID = function(array, find){
 };
 
 module.exports = {
-    cloneModelObject: cloneModelObject,
     indexOfID: indexOfID
 }

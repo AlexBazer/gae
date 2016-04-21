@@ -1,4 +1,3 @@
-# from google.appengine.ext import ndb
 from handlers import MainPage, TaskHandler, TaskListHandler
 
 import webapp2

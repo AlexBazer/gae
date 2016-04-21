@@ -14,7 +14,7 @@ class Task(ndb.Model):
     dtime = ndb.DateTimeProperty(auto_now_add=True)
 
     @classmethod
-    def get_tasks(cls, user_id):
+    def get_list(cls, user_id):
         return cls.query(ancestor=get_task_list_key(user_id)).order(cls.dtime).fetch()
 
     @classmethod

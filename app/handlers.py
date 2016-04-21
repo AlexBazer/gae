@@ -1,4 +1,4 @@
-from models import Task, get_task_list_key
+from models import Task
 from google.appengine.api import users
 
 from google.appengine.ext.webapp import template
@@ -56,7 +56,7 @@ class TaskListHandler(RequestHandlerWithUser):
         """Get all tasks in json form"""
         tasks = [
             {'id': task.key.id(), 'content': task.content, 'finished': task.finished}
-            for task in Task.get_tasks(self.user.user_id())
+            for task in Task.get_list(self.user.user_id())
         ]
         return jsonify(tasks)
 

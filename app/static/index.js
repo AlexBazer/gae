@@ -1,8 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var m = require('mithril');
-var utils = require('./utils.js');
-var models = require('./models.js');
-
 
 /**
  * ViewCheckTask component
@@ -165,7 +162,7 @@ module.exports = {
     ViewCheckTask: ViewCheckTask
 };
 
-},{"./models.js":3,"./utils.js":4,"mithril":5}],2:[function(require,module,exports){
+},{"mithril":5}],2:[function(require,module,exports){
 var m = require('mithril');
 var components = require('./components.js');
 var models = require('./models.js');
@@ -344,17 +341,6 @@ module.exports = {
 
 },{"mithril":5}],4:[function(require,module,exports){
 /**
- * Clone models used in this project
- * @param  {object} model         Model from which to create new object
- * @param  {object} objectToClone Object to clone
- * @return {object}               Cloned object
- */
-var cloneModelObject = function(model, objectToClone){
-    return new model(JSON.parse(JSON.stringify(objectToClone)));
-};
-
-
-/**
  * indexOfID Find element in array by id and return Index. Add fields are m.prop
  * @param  {array}  array       Array of elements
  * @param  {object} find        Object to be found
@@ -367,7 +353,6 @@ var indexOfID = function(array, find){
 };
 
 module.exports = {
-    cloneModelObject: cloneModelObject,
     indexOfID: indexOfID
 }
 

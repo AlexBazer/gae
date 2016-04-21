@@ -1,7 +1,4 @@
 var m = require('mithril');
-var utils = require('./utils.js');
-var models = require('./models.js');
-
 
 /**
  * ViewCheckTask component
