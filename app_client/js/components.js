@@ -78,12 +78,20 @@ var EditTask = {
  * @event 				onclick 	onckick event handler
  */
 var Button = {
+    controller: function(){
+        return{
+            onclick:function(call_next, event){
+                event.preventDefault();
+                call_next?call_next(event):null;
+            }
+        };
+    },
     view: function(ctrl, args) {
     	return (
     		<a class={['btn', args.class?args.class:''].join(' ')}
     		   disabled={args.disabled?true:false}
                href={args.href?args.href:'#'}
-	           onclick={args.onclick?args.onclick:null}
+	           onclick={ctrl.onclick.bind(null, args.onclick)}
     		>
                 {args.icon?<i class="material-icons">{args.icon}</i>:''}
     			{args.text?args.text:''}
