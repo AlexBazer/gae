@@ -17,14 +17,11 @@
   },
   "homepage": "https://github.com/AlexBazer/gae#readme",
   "dependencies": {
-    "mithril": "^0.2.4",
-    "normalize.css": "^4.1.1",
-    "skeleton-less": "^2.0.1"
+    "mithril": "^0.2.4"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
     "gulp": "^3.9.1",
-    "gulp-less": "^3.0.5",
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
     "mithrilify": "0.0.6",

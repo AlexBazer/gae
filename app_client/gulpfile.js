@@ -3,22 +3,12 @@ var gulp = require('gulp'),
     watchify = require('watchify'),
     mithrilify = require('mithrilify'),
     source = require('vinyl-source-stream'),
-    less = require('gulp-less'),
     notify = require('gulp-notify'),
     rename = require('gulp-rename'),
     destFolder = '../app/static/',
     destFile = 'index.js',
     jsSourceFile = './js/index.js',
-    lessSourceFiles = './less/*.less',
-    // lessSourceFiles = [
-    //     './less/index.less',
-    // ],
-    jswSource = './js/**/*.js',
-    lessPackagesPaths = [
-        './node_modules/'
-    ];
-
-
+    jswSource = './js/**/*.js';
 
 function handleErrors() {
     var args = Array.prototype.slice.call(arguments);
@@ -57,18 +47,4 @@ gulp.task('watch-browserify', function(){
     return rebundle();
 });
 
-
-gulp.task('less', function() {
-    return gulp.src(lessSourceFiles)
-        .pipe(less({
-            paths: lessPackagesPaths,
-        }))
-        .pipe(gulp.dest(destFolder));
-});
-
-
-gulp.task('watch',['watch-browserify'],  function(){
-    gulp.watch([lessSourceFiles], ['less']);
-});
-
-gulp.task('default', ['browserify', 'watch']);
+gulp.task('default', ['browserify', 'watch-browserify']);
