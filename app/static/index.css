@@ -5,3 +5,11 @@
   height: 15px;
   padding-left: 30px;
 }
+
+.row > div:first-child{
+    padding-top: 10px;
+}
+
+.row.checked{
+    color: gray;
+}
