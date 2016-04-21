@@ -23,7 +23,7 @@ var ViewCheckTask = {
     view: function(ctrl, args){
         var args = args || {};
         return (
-            {tag: "div", attrs: {class:"view-task", key:args.task.id()}, children: [
+            {tag: "div", attrs: {class:['view-task', args.task.finished()?'checked':''].join(' '), key:args.task.id()}, children: [
                 m.component(Checkbox, {
                     value:args.task.finished(), 
                     onchange:ctrl.onchecked.bind(null, args.task, args.onchecked)}

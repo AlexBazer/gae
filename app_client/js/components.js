@@ -22,7 +22,7 @@ var ViewCheckTask = {
     view: function(ctrl, args){
         var args = args || {};
         return (
-            <div class="view-task" key={args.task.id()}>
+            <div class={['view-task', args.task.finished()?'checked':''].join(' ')} key={args.task.id()}>
                 <Checkbox
                     value={args.task.finished()}
                     onchange={ctrl.onchecked.bind(null, args.task, args.onchecked)}
