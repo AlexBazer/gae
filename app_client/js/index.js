@@ -3,8 +3,7 @@ var components = require('./components.js');
 var models = require('./models.js');
 var utils  = require('./utils.js');
 
-var container = document.createElement('div');
-document.body.appendChild(container);
+var appContainer = document.getElementById('app');
 
 
 var Page = function(){
@@ -18,7 +17,7 @@ var Page = function(){
 
     self.view = function(ctrl, args){
         return (
-            <div class="container">
+            <div>
                 {self.taskList().map(function(elem, index){
                     return (
                         <components.ViewCheckTask
@@ -63,4 +62,4 @@ var Page = function(){
     };
 };
 
-m.mount(container, new Page());
+m.mount(appContainer, new Page());

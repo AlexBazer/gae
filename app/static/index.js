@@ -137,8 +137,7 @@ var components = require('./components.js');
 var models = require('./models.js');
 var utils  = require('./utils.js');
 
-var container = document.createElement('div');
-document.body.appendChild(container);
+var appContainer = document.getElementById('app');
 
 
 var Page = function(){
@@ -152,7 +151,7 @@ var Page = function(){
 
     self.view = function(ctrl, args){
         return (
-            {tag: "div", attrs: {class:"container"}, children: [
+            {tag: "div", attrs: {}, children: [
                 self.taskList().map(function(elem, index){
                     return (
                         m.component(components.ViewCheckTask, {
@@ -197,7 +196,7 @@ var Page = function(){
     };
 };
 
-m.mount(container, new Page());
+m.mount(appContainer, new Page());
 
 },{"./components.js":1,"./models.js":3,"./utils.js":4,"mithril":5}],3:[function(require,module,exports){
 var m = require('mithril')

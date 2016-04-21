@@ -1,6 +1,8 @@
 from models import Task, get_task_list_key
 from google.appengine.api import users
 
+from google.appengine.ext.webapp import template
+
 import webapp2
 import json
 import os
@@ -39,8 +41,7 @@ class RequestHandlerWithUser(webapp2.RequestHandler):
 class MainPage(RequestHandlerWithUser):
     def get(self):
         index_html = os.path.join(os.path.dirname(__file__), 'index.html')
-        self.response.headers['Content-Type'] = 'text/html'
-        self.response.write(open(index_html).read())
+        self.response.write(template.render(index_html, {'logout_url': users.create_logout_url('/')}))
 
 
 class TaskListHandler(RequestHandlerWithUser):
