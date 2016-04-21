@@ -24,17 +24,18 @@ var ViewCheckTask = {
         var args = args || {};
         return (
             {tag: "div", attrs: {class:['ViewCheckTask row', args.task.finished()?'checked':''].join(' '), key:args.task.id()}, children: [
-                m.component(Checkbox, {
-                    value:args.task.finished(), 
-                    onchange:ctrl.onchecked.bind(null, args.task, args.onchecked), 
-                    class:"one column"}
-                ), 
-                m.component(Input, {
-                    value:args.task.content(), 
-                    class:"eight columns"}
-                ), 
-                {tag: "div", attrs: {class:"two columns"}, children: [
-                    m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete.bind(null, args.task):null})
+                {tag: "div", attrs: {class:"col s6"}, children: [
+                    m.component(Checkbox, {
+                        value:args.task.finished(), 
+                        onchange:ctrl.onchecked.bind(null, args.task, args.onchecked)}
+                    ), 
+                    {tag: "span", attrs: {}, children: [args.task.content()]}
+                ]}, 
+                {tag: "div", attrs: {class:"col s6"}, children: [
+                    m.component(Button, {
+                        icon:"delete", 
+                        class:"btn-floating", 
+                        onclick:args.ondelete?args.ondelete.bind(null, args.task):null})
                 ]}
             ]}
         );
@@ -52,10 +53,16 @@ var ViewCheckTask = {
 var EditTask = {
     view: function(ctrl, args){
         return (
-            {tag: "div", attrs: {class:"edit-task"}, children: [
-                m.component(Input, {value:args.task.content(), onchange:args.task.content}), 
-                m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(null, args.task):null}), 
-                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:null})
+            {tag: "div", attrs: {class:"edit-task row"}, children: [
+                m.component(Input, {
+                    value:args.task.content(), 
+                    onchange:args.task.content, 
+                    class:"col s6"}
+                ), 
+                {tag: "div", attrs: {class:"col s6"}, children: [
+                    m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(null, args.task):null}), 
+                    m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:null})
+                ]}
             ]}
         );
     }
@@ -72,12 +79,13 @@ var EditTask = {
 var Button = {
     view: function(ctrl, args) {
     	return (
-    		{tag: "a", attrs: {class:['button', args.class?args.class:'button-primary'].join(' '), 
+    		{tag: "a", attrs: {class:['btn', args.class?args.class:''].join(' '), 
     		   disabled:args.disabled?true:false, 
                href:args.href?args.href:'#', 
-	           onclick:args.onclick?args.onclick:nul
+	           onclick:args.onclick?args.onclick:null
     		}, children: [
-    			args.text?args.text:'Empty'
+                args.icon?{tag: "i", attrs: {class:"material-icons"}, children: [args.icon]}:'', 
+    			args.text?args.text:''
     		]}
     	);
     }
@@ -95,13 +103,17 @@ var Button = {
 var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
+        var _id = Math.floor(Math.random()*1000);
         return (
-            {tag: "div", attrs: {class:['checkbox', args.class?args.class:''].join(' ')}, children: [
+            {tag: "span", attrs: {class:['checkbox', args.class?args.class:''].join(' ')}, children: [
                 {tag: "input", attrs: {
                     type:"checkbox", 
                     checked:args.value?true:false, 
-                    onchange:args.onchange?m.withAttr('checked', args.onchange):null}
-                }
+                    onchange:args.onchange?m.withAttr('checked', args.onchange):null, 
+                    class:"filled-in", 
+                    id:_id}
+                }, 
+                {tag: "label", attrs: {for:_id}}
             ]}
         );
     }

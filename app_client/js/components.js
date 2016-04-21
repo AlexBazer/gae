@@ -23,17 +23,18 @@ var ViewCheckTask = {
         var args = args || {};
         return (
             <div class={['ViewCheckTask row', args.task.finished()?'checked':''].join(' ')} key={args.task.id()}>
-                <Checkbox
-                    value={args.task.finished()}
-                    onchange={ctrl.onchecked.bind(null, args.task, args.onchecked)}
-                    class="one column"
-                />
-                <Input
-                    value={args.task.content()}
-                    class="eight columns"
-                />
-                <div class="two columns">
-                    <Button text="Delete" onclick={args.ondelete?args.ondelete.bind(null, args.task):null}/>
+                <div class="col s6">
+                    <Checkbox
+                        value={args.task.finished()}
+                        onchange={ctrl.onchecked.bind(null, args.task, args.onchecked)}
+                    />
+                    <span>{args.task.content()}</span>
+                </div>
+                <div class="col s6">
+                    <Button
+                        icon="delete"
+                        class="btn-floating"
+                        onclick={args.ondelete?args.ondelete.bind(null, args.task):null}/>
                 </div>
             </div>
         );
@@ -51,10 +52,16 @@ var ViewCheckTask = {
 var EditTask = {
     view: function(ctrl, args){
         return (
-            <div class="edit-task">
-                <Input value={args.task.content()} onchange={args.task.content}/>
-                <Button text="Save" onclick={args.onsave?args.onsave.bind(null, args.task):null}/>
-                <Button text="Cancel" onclick={args.oncancel?args.oncancel:null}/>
+            <div class="edit-task row">
+                <Input
+                    value={args.task.content()}
+                    onchange={args.task.content}
+                    class="col s6"
+                />
+                <div class="col s6">
+                    <Button text="Save" onclick={args.onsave?args.onsave.bind(null, args.task):null}/>
+                    <Button text="Cancel" onclick={args.oncancel?args.oncancel:null}/>
+                </div>
             </div>
         );
     }
@@ -71,12 +78,13 @@ var EditTask = {
 var Button = {
     view: function(ctrl, args) {
     	return (
-    		<a class={['button', args.class?args.class:'button-primary'].join(' ')}
+    		<a class={['btn', args.class?args.class:''].join(' ')}
     		   disabled={args.disabled?true:false}
                href={args.href?args.href:'#'}
-	           onclick={args.onclick?args.onclick:nul}
+	           onclick={args.onclick?args.onclick:null}
     		>
-    			{args.text?args.text:'Empty'}
+                {args.icon?<i class="material-icons">{args.icon}</i>:''}
+    			{args.text?args.text:''}
     		</a>
     	);
     }
@@ -94,14 +102,18 @@ var Button = {
 var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
+        var _id = Math.floor(Math.random()*1000);
         return (
-            <div class={['checkbox', args.class?args.class:''].join(' ')}>
+            <span class={['checkbox', args.class?args.class:''].join(' ')}>
                 <input
                     type="checkbox"
                     checked={args.value?true:false}
                     onchange={args.onchange?m.withAttr('checked', args.onchange):null}
+                    class="filled-in"
+                    id={_id}
                 />
-            </div>
+                <label for={_id}></label>
+            </span>
         );
     }
 };
