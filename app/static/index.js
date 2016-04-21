@@ -23,7 +23,7 @@ var ViewCheckTask = {
     view: function(ctrl, args){
         var args = args || {};
         return (
-            {tag: "div", attrs: {class:['ViewCheckTask row', args.task.finished()?'checked':''].join(' '), key:args.task.id()}, children: [
+            {tag: "div", attrs: {class:['row', args.task.finished()?'checked':''].join(' '), key:args.task.id()}, children: [
                 {tag: "div", attrs: {class:"col s6"}, children: [
                     m.component(Checkbox, {
                         value:args.task.finished(), 
@@ -31,7 +31,7 @@ var ViewCheckTask = {
                     ), 
                     {tag: "span", attrs: {}, children: [args.task.content()]}
                 ]}, 
-                {tag: "div", attrs: {class:"col s6"}, children: [
+                {tag: "div", attrs: {}, children: [
                     m.component(Button, {
                         icon:"delete", 
                         class:"btn-floating", 
@@ -59,7 +59,7 @@ var EditTask = {
                     onchange:args.task.content, 
                     class:"col s6"}
                 ), 
-                {tag: "div", attrs: {class:"col s6"}, children: [
+                {tag: "div", attrs: {}, children: [
                     m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(null, args.task):null}), 
                     m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:null})
                 ]}
@@ -176,8 +176,8 @@ var ViewTasks = function(){
 
     self.view = function(ctrl, args){
         return (
-            {tag: "div", attrs: {}, children: [
-                {tag: "div", attrs: {class:"ViewTasks"}, children: [
+            {tag: "div", attrs: {class:"section"}, children: [
+                {tag: "div", attrs: {}, children: [
                     self.taskList().map(function(elem, index){
                         return (
                             m.component(components.ViewCheckTask, {
@@ -188,18 +188,19 @@ var ViewTasks = function(){
                         );
                     })
                 ]}, 
-                {tag: "div", attrs: {class:"controls"}, children: [
+                {tag: "div", attrs: {}, children: [
                     self.taskToEdit()?(
                         m.component(components.EditTask, {
                             task:self.taskToEdit(), 
                             onsave:self.createTask, 
                             oncancel:self.taskToEdit.bind(null, false)}
                         )):(
+                        {tag: "div", attrs: {class:"row"}, children: [
                             m.component(components.Button, {
                                 text:"Add task", 
                                 onclick:self.taskToEdit.bind(null, new models.Task())}
                             )
-                        )
+                        ]})
                     
                 ]}
             ]}

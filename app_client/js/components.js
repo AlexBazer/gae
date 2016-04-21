@@ -22,7 +22,7 @@ var ViewCheckTask = {
     view: function(ctrl, args){
         var args = args || {};
         return (
-            <div class={['ViewCheckTask row', args.task.finished()?'checked':''].join(' ')} key={args.task.id()}>
+            <div class={['row', args.task.finished()?'checked':''].join(' ')} key={args.task.id()}>
                 <div class="col s6">
                     <Checkbox
                         value={args.task.finished()}
@@ -30,7 +30,7 @@ var ViewCheckTask = {
                     />
                     <span>{args.task.content()}</span>
                 </div>
-                <div class="col s6">
+                <div>
                     <Button
                         icon="delete"
                         class="btn-floating"
@@ -58,7 +58,7 @@ var EditTask = {
                     onchange={args.task.content}
                     class="col s6"
                 />
-                <div class="col s6">
+                <div>
                     <Button text="Save" onclick={args.onsave?args.onsave.bind(null, args.task):null}/>
                     <Button text="Cancel" onclick={args.oncancel?args.oncancel:null}/>
                 </div>

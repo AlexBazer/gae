@@ -24,8 +24,8 @@ var ViewTasks = function(){
 
     self.view = function(ctrl, args){
         return (
-            <div>
-                <div class="ViewTasks">
+            <div class="section">
+                <div>
                     {self.taskList().map(function(elem, index){
                         return (
                             <components.ViewCheckTask
@@ -36,18 +36,19 @@ var ViewTasks = function(){
                         );
                     })}
                 </div>
-                <div class="controls">
+                <div>
                     {self.taskToEdit()?(
                         <components.EditTask
                             task={self.taskToEdit()}
                             onsave={self.createTask}
                             oncancel={self.taskToEdit.bind(null, false)}
                         />):(
+                        <div class="row">
                             <components.Button
                                 text="Add task"
                                 onclick={self.taskToEdit.bind(null, new models.Task())}
                             />
-                        )
+                        </div>)
                     }
                 </div>
             </div>
