@@ -1,6 +1,7 @@
 var m = require('mithril');
 var components = require('./components.js');
 var models = require('./models.js');
+var utils  = require('./utils.js');
 
 var container = document.createElement('div');
 document.body.appendChild(container);
@@ -9,9 +10,10 @@ document.body.appendChild(container);
 var Page = function(){
     var self = this;
     self.taskToEdit = m.prop(false);
+    self.taskList = m.prop([]);
 
     self.controller = function(args){
-        self.taskList = models.Task.getList();
+        models.Task.getList().then(self.taskList);
     };
 
     self.view = function(ctrl, args){
@@ -49,13 +51,21 @@ var Page = function(){
                 alert(ret);
             } else {
                 self.taskToEdit(false);
-                self.controller();
+                self.taskList().push(ret);
             }
         });
     };
 
     self.deleteTask = function(task){
-        models.Task.delete(task, self.controller);
+        models.Task.delete(task, function(ret){
+            if (typeof(ret) == 'string'){
+                alert(ret);
+            } else {
+                var indexToDelete = utils.indexOfID(self.taskList(), ret)
+                console.log(indexToDelete);
+                self.taskList().splice(indexToDelete, 1);
+            }
+        });
     };
 
     self.checkTask = function(task){

@@ -39,9 +39,9 @@ Task.create = function(task, callback){
     }}).then(function(data){
         if (data.status == 'ok'){
             task.id(data.id);
-            callback?callback(task):undefined;
+            callback?callback(task):null;
         } else {
-            callback?callback(data.msg):undefined;            
+            callback?callback(data.msg):null;
         }
     });
 };
@@ -59,7 +59,7 @@ Task.edit = function(task, callback){
         content: task.content(),
         finished: task.finished()
     }}).then(function(data){
-        callback?callback():undefined;
+        callback?callback():null;
     });
 };
 
@@ -72,8 +72,12 @@ Task.edit = function(task, callback){
  */
 Task.delete = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
-    m.request({method:'DELETE', url: task_url}).then(function(){
-        callback?callback():undefined;
+    m.request({method:'DELETE', url: task_url}).then(function(data){
+        if (data.status == 'ok'){
+            callback?callback(task):null;
+        } else {
+            callback?callback(msg):null;                        
+        }
     });
 };
 

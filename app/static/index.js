@@ -135,6 +135,7 @@ module.exports = {
 var m = require('mithril');
 var components = require('./components.js');
 var models = require('./models.js');
+var utils  = require('./utils.js');
 
 var container = document.createElement('div');
 document.body.appendChild(container);
@@ -143,9 +144,10 @@ document.body.appendChild(container);
 var Page = function(){
     var self = this;
     self.taskToEdit = m.prop(false);
+    self.taskList = m.prop([]);
 
     self.controller = function(args){
-        self.taskList = models.Task.getList();
+        models.Task.getList().then(self.taskList);
     };
 
     self.view = function(ctrl, args){
@@ -183,13 +185,21 @@ var Page = function(){
                 alert(ret);
             } else {
                 self.taskToEdit(false);
-                self.controller();
+                self.taskList().push(ret);
             }
         });
     };
 
     self.deleteTask = function(task){
-        models.Task.delete(task, self.controller);
+        models.Task.delete(task, function(ret){
+            if (typeof(ret) == 'string'){
+                alert(ret);
+            } else {
+                var indexToDelete = utils.indexOfID(self.taskList(), ret)
+                console.log(indexToDelete);
+                self.taskList().splice(indexToDelete, 1);
+            }
+        });
     };
 
     self.checkTask = function(task){
@@ -199,7 +209,7 @@ var Page = function(){
 
 m.mount(container, new Page());
 
-},{"./components.js":1,"./models.js":3,"mithril":5}],3:[function(require,module,exports){
+},{"./components.js":1,"./models.js":3,"./utils.js":4,"mithril":5}],3:[function(require,module,exports){
 var m = require('mithril')
 /**
  * Task model
@@ -241,9 +251,9 @@ Task.create = function(task, callback){
     }}).then(function(data){
         if (data.status == 'ok'){
             task.id(data.id);
-            callback?callback(task):undefined;
+            callback?callback(task):null;
         } else {
-            callback?callback(data.msg):undefined;            
+            callback?callback(data.msg):null;
         }
     });
 };
@@ -261,7 +271,7 @@ Task.edit = function(task, callback){
         content: task.content(),
         finished: task.finished()
     }}).then(function(data){
-        callback?callback():undefined;
+        callback?callback():null;
     });
 };
 
@@ -274,8 +284,12 @@ Task.edit = function(task, callback){
  */
 Task.delete = function(task, callback){
     var task_url = '/tasks/{{id}}/'.replace('{{id}}', task.id());
-    m.request({method:'DELETE', url: task_url}).then(function(){
-        callback?callback():undefined;
+    m.request({method:'DELETE', url: task_url}).then(function(data){
+        if (data.status == 'ok'){
+            callback?callback(task):null;
+        } else {
+            callback?callback(msg):null;                        
+        }
     });
 };
 
@@ -294,7 +308,7 @@ module.exports = {
 
 },{"mithril":5}],4:[function(require,module,exports){
 /**
- * clone models used in this project
+ * Clone models used in this project
  * @param  {object} model         Model from which to create new object
  * @param  {object} objectToClone Object to clone
  * @return {object}               Cloned object
@@ -303,8 +317,22 @@ var cloneModelObject = function(model, objectToClone){
     return new model(JSON.parse(JSON.stringify(objectToClone)));
 };
 
+
+/**
+ * indexOfID Find element in array by id and return Index. Add fields are m.prop
+ * @param  {array}  array       Array of elements
+ * @param  {object} find        Object to be found
+ * @return {object}             index
+ */
+var indexOfID = function(array, find){
+    return array.map(function(elem, index){
+        return elem.id();
+    }).indexOf(find.id())
+};
+
 module.exports = {
-    cloneModelObject: cloneModelObject
+    cloneModelObject: cloneModelObject,
+    indexOfID: indexOfID
 }
 
 },{}],5:[function(require,module,exports){
