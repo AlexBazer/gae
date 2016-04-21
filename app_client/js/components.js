@@ -25,6 +25,7 @@ var ViewCheckTask = {
                     <Checkbox
                         value={args.task.finished()}
                         onchange={ctrl.onchecked.bind(null, args.task, args.onchecked)}
+                        id={args.task.id()}
                     />
                     <span>{args.task.content()}</span>
                 </div>
@@ -104,7 +105,7 @@ var Button = {
 var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
-        var _id = 'checkbox_' + Math.floor(Math.random()*1000);
+        var _id = args.id?args.id:'no-id';
         return (
             <span class={['checkbox', args.class?args.class:''].join(' ')}>
                 <input

@@ -25,7 +25,8 @@ var ViewCheckTask = {
                 {tag: "div", attrs: {class:"col s6"}, children: [
                     m.component(Checkbox, {
                         value:args.task.finished(), 
-                        onchange:ctrl.onchecked.bind(null, args.task, args.onchecked)}
+                        onchange:ctrl.onchecked.bind(null, args.task, args.onchecked), 
+                        id:args.task.id()}
                     ), 
                     {tag: "span", attrs: {}, children: [args.task.content()]}
                 ]}, 
@@ -105,7 +106,7 @@ var Button = {
 var Checkbox = {
     view:  function(ctrl, args){
         var args = args || {};
-        var _id = 'checkbox_' + Math.floor(Math.random()*1000);
+        var _id = args.id?args.id:'no-id';
         return (
             {tag: "span", attrs: {class:['checkbox', args.class?args.class:''].join(' ')}, children: [
                 {tag: "input", attrs: {
