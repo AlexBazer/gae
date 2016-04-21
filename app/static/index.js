@@ -7,24 +7,20 @@ var models = require('./models.js');
 var ViewCheckTask = {
     controller: function(args){
         return {
-            onchecked: function(task, checked){
-                if (!args.onchecked){
-                    return;
-                }
-                var taskClone = utils.cloneModelObject(models.Task, task);
-                task.finished(checked);
-                args.onchecked(task);
+            onchecked: function(task, callback, checked){
+                var task_clone = utils.cloneModelObject(models.Task, task);
+                task_clone.finished(checked);
+                callback(task_clone)
             }
         };
     },
     view: function(ctrl, args){
         var args = args || {};
         return (
-            {tag: "div", attrs: {class:"view-task"}, children: [
+            {tag: "div", attrs: {class:"view-task", key:args.task.id()}, children: [
                 m.component(Checkbox, {
                     value:args.task.finished(), 
-                    onchange:ctrl.onchecked.bind(null, args.task), 
-                    newval:args.task.id()}
+                    onchange:ctrl.onchecked.bind(null, args.task, args.onchecked)}
                 ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
                 m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
@@ -43,20 +39,12 @@ var ViewCheckTask = {
  */
 
 var EditTask = {
-    controller: function(args){
-        var args = args || {};
-        console.log('Edit contraller');
-        return {
-            task: args.task?utils.cloneModelObject(models.Task, args.task):new models.Task()
-        };
-    },
     view: function(ctrl, args){
-        var args = args || {};
         return (
             {tag: "div", attrs: {class:"edit-task"}, children: [
-                m.component(Input, {value:ctrl.task.content(), onchange:ctrl.task.content}), 
-                m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(this, ctrl.task):undefined}), 
-                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:undefined})
+                m.component(Input, {value:args.task.content(), onchange:args.task.content}), 
+                m.component(Button, {text:"Save", onclick:args.onsave?args.onsave.bind(null, args.task):null}), 
+                m.component(Button, {text:"Cancel", onclick:args.oncancel?args.oncancel:null})
             ]}
         );
     }
@@ -149,13 +137,13 @@ document.body.appendChild(container);
 
 var Page = function(){
     var self = this;
-    self.triggerCreateTask = m.prop(false);
+    self.editTask = m.prop(false);
+
 
     self.controller = function(args){
         self.taskList = models.Task.getList();
     };
     self.view = function(ctrl, args){
-
         var elems = self.taskList();
         return (
             {tag: "div", attrs: {class:"container"}, children: [
@@ -164,18 +152,19 @@ var Page = function(){
                         m.component(components.ViewCheckTask, {
                             task:elem, 
                             ondelete:self.deleteTask.bind(null, elem), 
-                            onchecked:self.checkTask.bind(null, elem)}
+                            onchecked:self.checkTask}
                         )
                     );
                 }), 
-                self.triggerCreateTask()?(
+                self.editTask()?(
                     m.component(components.EditTask, {
+                        task:self.editTask(), 
                         onsave:self.createTask, 
-                        oncancel:self.triggerCreateTask.bind(null, false)}
+                        oncancel:self.editTask.bind(null, false)}
                     )):(
                         m.component(components.Button, {
                             text:"Add task", 
-                            onclick:self.triggerCreateTask.bind(null, true)}
+                            onclick:self.editTask.bind(null, new models.Task())}
                         )
                     )
                 
@@ -189,8 +178,6 @@ var Page = function(){
         models.Task.delete(task, self.controller);
     };
     self.checkTask = function(task){
-        console.log('here!', task.id());
-
         models.Task.edit(task, self.controller);
     };
 };

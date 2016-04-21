@@ -6,24 +6,20 @@ var models = require('./models.js');
 var ViewCheckTask = {
     controller: function(args){
         return {
-            onchecked: function(task, checked){
-                if (!args.onchecked){
-                    return;
-                }
-                var taskClone = utils.cloneModelObject(models.Task, task);
-                task.finished(checked);
-                args.onchecked(task);
+            onchecked: function(task, callback, checked){
+                var task_clone = utils.cloneModelObject(models.Task, task);
+                task_clone.finished(checked);
+                callback(task_clone)
             }
         };
     },
     view: function(ctrl, args){
         var args = args || {};
         return (
-            <div class="view-task">
+            <div class="view-task" key={args.task.id()}>
                 <Checkbox
                     value={args.task.finished()}
-                    onchange={ctrl.onchecked.bind(null, args.task)}
-                    newval={args.task.id()}
+                    onchange={ctrl.onchecked.bind(null, args.task, args.onchecked)}
                 />
                 <span class="task-content">{args.task?args.task.content():''}</span>
                 <Button text="Delete" onclick={args.ondelete?args.ondelete:undefined}/>
@@ -42,20 +38,12 @@ var ViewCheckTask = {
  */
 
 var EditTask = {
-    controller: function(args){
-        var args = args || {};
-        console.log('Edit contraller');
-        return {
-            task: args.task?utils.cloneModelObject(models.Task, args.task):new models.Task()
-        };
-    },
     view: function(ctrl, args){
-        var args = args || {};
         return (
             <div class="edit-task">
-                <Input value={ctrl.task.content()} onchange={ctrl.task.content}/>
-                <Button text="Save" onclick={args.onsave?args.onsave.bind(this, ctrl.task):undefined}/>
-                <Button text="Cancel" onclick={args.oncancel?args.oncancel:undefined}/>
+                <Input value={args.task.content()} onchange={args.task.content}/>
+                <Button text="Save" onclick={args.onsave?args.onsave.bind(null, args.task):null}/>
+                <Button text="Cancel" onclick={args.oncancel?args.oncancel:null}/>
             </div>
         );
     }
