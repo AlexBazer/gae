@@ -1,5 +1,5 @@
-# Backend app(you should work with it from **project root** folder)
-## Initialize local environment
+# Backend app
+## Initialize local environment(you should work with it from *project root* folder)
 ### Download and unpack google python sdk in the root direcroty
 ```
 wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.36.zip -O temp.zip && unzip temp.zip && rm temp.zip
@@ -20,7 +20,7 @@ python testrunner.py google_appengine/ app/
 ```
 
 # Front end app
-## Initialize development environment(you should work with it from **app_client** folder)
+## Initialize development environment(you should work with it from *app_client* folder)
 ### Install gulp globally packages
 ```
 npm -g i gulp
