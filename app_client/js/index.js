@@ -6,7 +6,14 @@ var utils  = require('./utils.js');
 var appContainer = document.getElementById('app');
 
 
-var Page = function(){
+/**
+ * ViewTasks component
+ * Displays list of tasks for current user.
+ * Handle adding new Task, removind Task, and checking task as finished
+ *
+ * @type 	{Class}
+ */
+var ViewTasks = function(){
     var self = this;
     self.taskToEdit = m.prop(false);
     self.taskList = m.prop([]);
@@ -62,4 +69,4 @@ var Page = function(){
     };
 };
 
-m.mount(appContainer, new Page());
+m.mount(appContainer, new ViewTasks());

@@ -1,9 +1,4 @@
 var m = require('mithril')
-/**
- * Task model
- *
- *
- */
 
  /**
   * Task model
