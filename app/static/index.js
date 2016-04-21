@@ -3,6 +3,7 @@ var m = require('mithril');
 var utils = require('./utils.js');
 var models = require('./models.js');
 
+
 /**
  * ViewCheckTask component
  * @type 	{Object}
@@ -57,6 +58,7 @@ var EditTask = {
                 m.component(Input, {
                     value:args.task.content(), 
                     onchange:args.task.content, 
+                    autofocus:"true", 
                     class:"col s6"}
                 ), 
                 {tag: "div", attrs: {}, children: [
@@ -129,9 +131,19 @@ var Checkbox = {
  *
  * @param   {string}    type        type of input, default is text
  * @param   {string}    value       value to be shown
+ * @param   {any}       autofocus   apply autofocus to the input
  * @event               onchange    onchange invent, but gets only value of input
  */
 var Input = {
+    controller: function(){
+        return{
+            autofocus: function(autofocus, el, init){
+                if (!init && autofocus){
+                    el.focus();
+                }
+            }
+        }
+    },
     view:  function(ctrl, args){
         var args = args || {};
         return (
@@ -139,7 +151,8 @@ var Input = {
                 {tag: "input", attrs: {
                     type:args.type?args.type:'text', 
                     value:args.value||args.default||'', 
-                    onchange:args.onchange?m.withAttr('value', args.onchange):null}
+                    onchange:args.onchange?m.withAttr('value', args.onchange):null, 
+                    config:ctrl.autofocus.bind(null, args.autofocus)}
                 }
             ]}
         );
