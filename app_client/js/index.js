@@ -8,7 +8,7 @@ document.body.appendChild(container);
 
 var Page = function(){
     var self = this;
-    self.editTask = m.prop(false);
+    self.taskToEdit = m.prop(false);
 
 
     self.controller = function(args){
@@ -22,20 +22,20 @@ var Page = function(){
                     return (
                         <components.ViewCheckTask
                             task={elem}
-                            ondelete={self.deleteTask.bind(null, elem)}
+                            ondelete={self.deleteTask}
                             onchecked={self.checkTask}
                         />
                     );
                 })}
-                {self.editTask()?(
+                {self.taskToEdit()?(
                     <components.EditTask
-                        task={self.editTask()}
+                        task={self.taskToEdit()}
                         onsave={self.createTask}
-                        oncancel={self.editTask.bind(null, false)}
+                        oncancel={self.taskToEdit.bind(null, false)}
                     />):(
                         <components.Button
                             text="Add task"
-                            onclick={self.editTask.bind(null, new models.Task())}
+                            onclick={self.taskToEdit.bind(null, new models.Task())}
                         />
                     )
                 }
@@ -44,6 +44,7 @@ var Page = function(){
     };
     self.createTask = function(task){
         models.Task.create(task, self.controller);
+        self.taskToEdit(false);
     };
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);

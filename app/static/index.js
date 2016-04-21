@@ -3,14 +3,20 @@ var m = require('mithril');
 var utils = require('./utils.js');
 var models = require('./models.js');
 
-
+/**
+ * ViewCheckTask component
+ * @type 	{Object}
+ *
+ * @params 	{object} 	task 		Task object
+ * @event 				onchecked   On checkbox checked event. Pass task
+ * @event 				ondelete    On delete button click. Pass task
+ */
 var ViewCheckTask = {
-    controller: function(args){
+    controller: function(){
         return {
-            onchecked: function(task, callback, checked){
-                var task_clone = utils.cloneModelObject(models.Task, task);
-                task_clone.finished(checked);
-                callback(task_clone)
+            onchecked: function(task, call_next, checked){
+                task.finished(checked);
+                call_next?call_next(task):null;
             }
         };
     },
@@ -23,7 +29,7 @@ var ViewCheckTask = {
                     onchange:ctrl.onchecked.bind(null, args.task, args.onchecked)}
                 ), 
                 {tag: "span", attrs: {class:"task-content"}, children: [args.task?args.task.content():'']}, 
-                m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete:undefined})
+                m.component(Button, {text:"Delete", onclick:args.ondelete?args.ondelete.bind(null, args.task):null})
             ]}
         );
     }
@@ -34,10 +40,9 @@ var ViewCheckTask = {
  * @type 	{Object}
  *
  * @params 	{object} 	task 		Task object
- * @event 				onsave     	On task save event. Pass new task further
+ * @event 				onsave     	On task save event. Pass new task
  * @event 				oncancel    On task cancel editing event.
  */
-
 var EditTask = {
     view: function(ctrl, args){
         return (
@@ -137,7 +142,7 @@ document.body.appendChild(container);
 
 var Page = function(){
     var self = this;
-    self.editTask = m.prop(false);
+    self.taskToEdit = m.prop(false);
 
 
     self.controller = function(args){
@@ -151,20 +156,20 @@ var Page = function(){
                     return (
                         m.component(components.ViewCheckTask, {
                             task:elem, 
-                            ondelete:self.deleteTask.bind(null, elem), 
+                            ondelete:self.deleteTask, 
                             onchecked:self.checkTask}
                         )
                     );
                 }), 
-                self.editTask()?(
+                self.taskToEdit()?(
                     m.component(components.EditTask, {
-                        task:self.editTask(), 
+                        task:self.taskToEdit(), 
                         onsave:self.createTask, 
-                        oncancel:self.editTask.bind(null, false)}
+                        oncancel:self.taskToEdit.bind(null, false)}
                     )):(
                         m.component(components.Button, {
                             text:"Add task", 
-                            onclick:self.editTask.bind(null, new models.Task())}
+                            onclick:self.taskToEdit.bind(null, new models.Task())}
                         )
                     )
                 
@@ -173,6 +178,7 @@ var Page = function(){
     };
     self.createTask = function(task){
         models.Task.create(task, self.controller);
+        self.taskToEdit(false);
     };
     self.deleteTask = function(task){
         models.Task.delete(task, self.controller);
