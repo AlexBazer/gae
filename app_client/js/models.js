@@ -37,7 +37,12 @@ Task.create = function(task, callback){
     m.request({method:'POST', url: '/tasks/', data: {
         content: task.content()
     }}).then(function(data){
-        callback?callback():undefined;
+        if (data.status == 'ok'){
+            task.id(data.id);
+            callback?callback(task):undefined;
+        } else {
+            callback?callback(data.msg):undefined;            
+        }
     });
 };
 

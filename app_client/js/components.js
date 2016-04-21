@@ -49,8 +49,26 @@ var EditTask = {
                 <Input value={args.task.content()} onchange={args.task.content}/>
                 <Button text="Save" onclick={args.onsave?args.onsave.bind(null, args.task):null}/>
                 <Button text="Cancel" onclick={args.oncancel?args.oncancel:null}/>
+                {args.error?<ErrorTooltip msg={args.error}/>:''}
             </div>
         );
+    }
+};
+
+/**
+ * Toolpit error message
+ * @type {Object}
+ *
+ * @param 	{string}	msg 	error string message
+ */
+var ErrorTooltip = {
+    view: function(ctrl, args){
+        return (
+        	<div class="error-msg">
+        		<span>!</span>
+        		<i>{args.msg?args.msg:'No message was bound'}</i>
+        	</div>
+    	);
     }
 };
 
@@ -68,7 +86,7 @@ var Button = {
     		<a class={['button', args.class?args.class:'button-primary'].join(' ')}
     		   disabled={args.disabled?true:false}
                href={args.href?args.href:'#'}
-	           onclick={args.onclick?args.onclick:null}
+	           onclick={args.onclick?args.onclick:nul}
     		>
     			{args.text?args.text:'Empty'}
     		</a>

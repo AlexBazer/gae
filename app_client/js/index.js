@@ -9,7 +9,7 @@ document.body.appendChild(container);
 var Page = function(){
     var self = this;
     self.taskToEdit = m.prop(false);
-
+    self.taskToEditError = m.prop(false);
 
     self.controller = function(args){
         self.taskList = models.Task.getList();
@@ -30,6 +30,7 @@ var Page = function(){
                 {self.taskToEdit()?(
                     <components.EditTask
                         task={self.taskToEdit()}
+                        error={self.taskToEditError()}
                         onsave={self.createTask}
                         oncancel={self.taskToEdit.bind(null, false)}
                     />):(
@@ -44,8 +45,16 @@ var Page = function(){
     };
 
     self.createTask = function(task){
-        models.Task.create(task, self.controller);
-        self.taskToEdit(false);
+        models.Task.create(task, function(ret){
+            console.log(ret);
+            if (typeof(ret) == 'string'){
+                self.taskToEditError(ret);
+            } else {
+                self.taskToEditError(false);
+                self.taskToEdit(false);
+                self.controller();
+            }
+        });
     };
 
     self.deleteTask = function(task){
